@@ -22,8 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="Emotional Music Recommendation" />
+        <module name="assistenz.emotional-music-recommendation" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="1.7">
+      <module name="assistenz.emotional-music-recommendation" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
