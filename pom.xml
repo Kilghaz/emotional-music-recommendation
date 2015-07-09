@@ -7,4 +7,13 @@
     <groupId>de.ur</groupId>
     <artifactId>assistenz.emotional-music-recommendation</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openimaj</groupId>
+            <artifactId>audio-processing</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+    </dependencies>
+
 </project>
