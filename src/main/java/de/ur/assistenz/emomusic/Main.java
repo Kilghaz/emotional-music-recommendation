@@ -1,3 +1,5 @@
+package de.ur.assistenz.emomusic;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +20,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 System.out.println("Hello World!");
             }
+
         });
 
         StackPane root = new StackPane();
