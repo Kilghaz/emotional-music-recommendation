@@ -7,8 +7,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -35,6 +38,15 @@ public class Main extends Application {
                         }
                     }
                 };
+                listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        File item = (File) listCell.getItem();
+                        Media song = new Media(item.toURI().toASCIIString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(song);
+                        mediaPlayer.play();
+                    }
+                });
                 return listCell;
             }
         });
