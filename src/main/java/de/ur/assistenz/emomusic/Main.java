@@ -1,31 +1,91 @@
 package de.ur.assistenz.emomusic;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
 
+    private List<File> playList = new ArrayList<>();
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Hello World!");
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        ListView appContent = new ListView<>();
+        appContent.setCellFactory(new Callback<ListView, ListCell>() {
+            @Override
+            public ListCell call(ListView param) {
+                ListCell listCell = new ListCell(){
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(((File) item).getName());
+                        }
+                    }
+                };
+                return listCell;
+            }
+        });
+        ObservableList<File> observableList = FXCollections.observableList(playList);
+        appContent.setItems(observableList);
 
+        Button btnOpen = new Button("Open");
+        btnOpen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Select music files");
+                fileChooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3")
+                );
+                List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
+                observableList.addAll(selectedFiles);
             }
-
         });
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
+
+        Button btnPlay = new Button(">");
+        btnPlay.setOnAction(new EventHandler<ActionEvent>() {
+            boolean btnStatus = true;
+            @Override
+
+            public void handle(ActionEvent event) {
+                if (btnStatus == true) {
+                    btnPlay.setText("||");
+                    btnStatus = false;
+                }
+                else {
+                    btnPlay.setText(">");
+                    btnStatus = true;
+                }
+            }
+        });
+
+
+        BorderPane borderPane = new BorderPane();
+        ToolBar toolbar = new ToolBar(btnOpen);
+        HBox statusbar = new HBox(btnPlay);
+        final Slider slider = new Slider();
+        slider.setMin(0);
+        slider.setMax(50);
+        statusbar.getChildren().addAll(slider);
+        borderPane.setTop(toolbar);
+        borderPane.setCenter(appContent);
+        borderPane.setBottom(statusbar);
+
+        primaryStage.setScene(new Scene(borderPane, 300, 250));
         primaryStage.show();
     }
 
