@@ -58,7 +58,7 @@ public class Main extends Application {
         appContent.setItems(observableList);
 
         Button btnOpen = new Button("Open");
-        btnOpen.setId("open");
+        btnOpen.getStyleClass().add("button");
         btnOpen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -74,7 +74,7 @@ public class Main extends Application {
 
 
         Button btnPlay = new Button(">");
-        btnPlay.setId("play");
+        btnPlay.getStyleClass().add("button");
         btnPlay.setOnAction(new EventHandler<ActionEvent>() {
             boolean btnStatus = true;
             @Override
