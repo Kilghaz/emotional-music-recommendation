@@ -44,6 +44,10 @@ public class Main extends Application {
                         File item = (File) listCell.getItem();
                         Media song = new Media(item.toURI().toASCIIString());
                         MediaPlayer mediaPlayer = new MediaPlayer(song);
+                        /* wenn bereits Song spielt, stoppe diesen, starte den neuen,
+                        wenn auf den selben Song geklickt wurde - 1 klick - pause, doppelklick, neu spielen?
+                        wenn pausiert, song fortsetzen (1 Klick)
+                         */
                         mediaPlayer.play();
                     }
                 });
@@ -54,6 +58,7 @@ public class Main extends Application {
         appContent.setItems(observableList);
 
         Button btnOpen = new Button("Open");
+        btnOpen.setId("open");
         btnOpen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -69,6 +74,7 @@ public class Main extends Application {
 
 
         Button btnPlay = new Button(">");
+        btnPlay.setId("play");
         btnPlay.setOnAction(new EventHandler<ActionEvent>() {
             boolean btnStatus = true;
             @Override
@@ -85,6 +91,10 @@ public class Main extends Application {
             }
         });
 
+        /*weitere Buttons: Stop, vor- bzw. zurück
+
+         */
+
 
         BorderPane borderPane = new BorderPane();
         ToolBar toolbar = new ToolBar(btnOpen);
@@ -97,7 +107,10 @@ public class Main extends Application {
         borderPane.setCenter(appContent);
         borderPane.setBottom(statusbar);
 
-        primaryStage.setScene(new Scene(borderPane, 300, 250));
+
+        Scene scene = new Scene(borderPane, 500, 400);
+        scene.getStylesheets().addAll("style.css");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
