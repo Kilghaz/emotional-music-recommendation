@@ -4,6 +4,7 @@
     <option name="DEFAULT_COMPILER" value="Javac" />
     <resourceExtensions />
     <wildcardResourcePatterns>
+      <entry name="?*.css" />
       <entry name="!?*.java" />
       <entry name="!?*.form" />
       <entry name="!?*.class" />
@@ -12,7 +13,6 @@
       <entry name="!?*.flex" />
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
-      <entry name="*.css" />
     </wildcardResourcePatterns>
     <annotationProcessing>
       <profile default="true" name="Default" enabled="false">
@@ -26,9 +26,8 @@
         <module name="assistenz.emotional-music-recommendation" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="assistenz.emotional-music-recommendation" target="1.8" />
+    <bytecodeTargetLevel>
+      <module name="assistenz.emotional-music-recommendation" target="" />
     </bytecodeTargetLevel>
   </component>
 </project>
-
