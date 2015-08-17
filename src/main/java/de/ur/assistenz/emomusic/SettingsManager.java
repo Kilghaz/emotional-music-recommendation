@@ -38,9 +38,12 @@ public class SettingsManager {
         try {
             boolean needToInitializeDatabase = !doesDatabaseExist();
             Class.forName(DRIVER).newInstance();
-            this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_LOCATION + ";create=true");
             if(needToInitializeDatabase) {
+                this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_LOCATION + ";create=true");
                 initializeDatabase();
+            }
+            else {
+                this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_LOCATION);
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
@@ -50,19 +53,29 @@ public class SettingsManager {
     private void save(String name, String value, String type) {
         try {
             Statement statement = this.connection.createStatement();
-            if(doesDatabaseExist()) {
+            if(!doesSettingExist(name)) {
                 String query = "INSERT INTO " + TABLE_SETTINGS +
                         "(" + COLUMN_NAME + ", " + COLUMN_VALUE + ", " + COLUMN_TYPE + ") " +
                         "VALUES ('" + name + "', '" + value + "', '" + type + "')";
                 statement.executeUpdate(query);
             }
             else {
-                statement.executeQuery("UPDATE " + TABLE_SETTINGS +
-                        " SET " + COLUMN_VALUE + "=" + value + ", " + COLUMN_TYPE + "=" + type +
-                        " WHERE " + COLUMN_NAME + "=" + name
+                statement.executeUpdate("UPDATE " + TABLE_SETTINGS +
+                        " SET " + COLUMN_VALUE + "='" + value + "', " + COLUMN_TYPE + "='" + type + "'" +
+                        " WHERE " + COLUMN_NAME + "='" + name + "'"
                 );
             }
             statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void test(){
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery("SELECT * FROM " + TABLE_SETTINGS);
+            set.first();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,8 +86,8 @@ public class SettingsManager {
             return null;
         }
         try {
-            Statement statement = this.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_SETTINGS + " WHERE " + COLUMN_NAME + "=" + name);
+            Statement statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_SETTINGS + " WHERE " + COLUMN_NAME + "='" + name + "'");
             resultSet.first();
             ResultValue result = new ResultValue(resultSet.getString(COLUMN_VALUE), resultSet.getString(COLUMN_TYPE));
             statement.close();
@@ -87,15 +100,15 @@ public class SettingsManager {
 
     private boolean doesSettingExist(String name){
         try {
-            Statement statement = this.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_SETTINGS + " WHERE " + COLUMN_NAME + "=" + name);
+            Statement statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_SETTINGS + " WHERE " + COLUMN_NAME + "='" + name + "'");
             boolean isNotEmpty = resultSet.first();
             statement.close();
             return isNotEmpty;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     private void initializeDatabase() {

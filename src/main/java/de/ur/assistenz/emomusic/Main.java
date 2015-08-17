@@ -27,8 +27,8 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) {
         settingsManager = SettingsManager.getInstance();
-
         settingsManager.saveText("test", "test");
+        System.out.println(settingsManager.loadText("test"));
 
         primaryStage.setTitle("Hello World!");
         ListView appContent = new ListView<>();
