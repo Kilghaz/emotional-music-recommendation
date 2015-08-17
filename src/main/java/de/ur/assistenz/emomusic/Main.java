@@ -28,6 +28,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         settingsManager = SettingsManager.getInstance();
 
+        settingsManager.saveText("test", "test");
+
         primaryStage.setTitle("Hello World!");
         ListView appContent = new ListView<>();
         appContent.setCellFactory(new Callback<ListView, ListCell>() {
