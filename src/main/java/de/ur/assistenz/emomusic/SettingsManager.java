@@ -12,6 +12,7 @@ public class SettingsManager {
     private static final String TABLE_SETTINGS = "settings";
     private static final String COLUMN_VALUE = "value";
     private static final String COLUMN_NAME = "name";
+    private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 
     private static SettingsManager instance = null;
 
@@ -35,11 +36,12 @@ public class SettingsManager {
     private void createDatabaseConnection() {
         try {
             boolean needToInitializeDatabase = !doesDatabaseExist();
-            this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_FILE + ";create=true;");
+            Class.forName(DRIVER).newInstance();
+            this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_FILE + ";create=true");
             if(needToInitializeDatabase) {
                 initializeDatabase();
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -49,7 +51,7 @@ public class SettingsManager {
             Statement statement = this.connection.createStatement();
             statement.executeUpdate("CREATE TABLE " + TABLE_SETTINGS + "(" +
                         COLUMN_NAME + " VARCHAR(256), " +
-                        COLUMN_VALUE + " VARCHAR(1024), " +
+                        COLUMN_VALUE + " VARCHAR(1024)" +
                     ")");
         } catch (SQLException e) {
             e.printStackTrace();

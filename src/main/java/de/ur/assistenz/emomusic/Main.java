@@ -23,7 +23,11 @@ import java.util.List;
 public class Main extends Application {
 
     private List<File> playList = new ArrayList<>();
+    private SettingsManager settingsManager;
+
     public void start(Stage primaryStage) {
+        settingsManager = SettingsManager.getInstance();
+
         primaryStage.setTitle("Hello World!");
         ListView appContent = new ListView<>();
         appContent.setCellFactory(new Callback<ListView, ListCell>() {
