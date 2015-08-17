@@ -12,7 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -24,6 +24,7 @@ public class Main extends Application {
 
     private List<File> playList = new ArrayList<>();
     private SettingsManager settingsManager;
+    private ObservableList<File> observableList;
 
     public void start(Stage primaryStage) {
         settingsManager = SettingsManager.getInstance();
@@ -58,7 +59,7 @@ public class Main extends Application {
                 return listCell;
             }
         });
-        ObservableList<File> observableList = FXCollections.observableList(playList);
+        observableList = FXCollections.observableList(playList);
         appContent.setItems(observableList);
 
         Button btnOpen = new Button("Open");
@@ -66,13 +67,11 @@ public class Main extends Application {
         btnOpen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Select music files");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3")
-                );
-                List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
-                observableList.addAll(selectedFiles);
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                directoryChooser.setTitle("Select Music Library");
+                File folder = directoryChooser.showDialog(primaryStage);
+                settingsManager.saveText("library", folder.getAbsolutePath());
+                loadLibrary();
             }
         });
 
@@ -116,6 +115,23 @@ public class Main extends Application {
         scene.getStylesheets().addAll("style.css");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        try {
+            loadLibrary();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadLibrary() {
+        String libraryFolderPath = settingsManager.loadText("library");
+        if(libraryFolderPath == null) return;
+        File libraryFolder = new File(libraryFolderPath);
+        if(!libraryFolder.exists()) return;
+        File[] files = libraryFolder.listFiles((dir, name) -> name.endsWith(".mp3") || name.endsWith(".wav"));
+        observableList.removeAll();
+        observableList.addAll(files);
     }
 
 }
