@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class SettingsManager {
 
-    private static final String DATABASE_FILE = "settings.db";
+    private static final String DATABASE_LOCATION = ".settings";
     private static final String TABLE_SETTINGS = "settings";
     private static final String COLUMN_VALUE = "value";
     private static final String COLUMN_NAME = "name";
@@ -29,7 +29,7 @@ public class SettingsManager {
     }
 
     private boolean doesDatabaseExist() {
-        File databaseFile = new File(DATABASE_FILE);
+        File databaseFile = new File(DATABASE_LOCATION);
         return databaseFile.exists();
     }
 
@@ -37,7 +37,7 @@ public class SettingsManager {
         try {
             boolean needToInitializeDatabase = !doesDatabaseExist();
             Class.forName(DRIVER).newInstance();
-            this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_FILE + ";create=true");
+            this.connection = DriverManager.getConnection("jdbc:derby:" + DATABASE_LOCATION + ";create=true");
             if(needToInitializeDatabase) {
                 initializeDatabase();
             }
