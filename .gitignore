@@ -49,5 +49,6 @@ crashlytics-build.properties
 # Mac OS
 .DS_Store
 
-# Derby log
+# Derby
 derby.log
+settings.db
