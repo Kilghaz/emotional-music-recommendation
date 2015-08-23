@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
@@ -42,18 +41,11 @@ public class Main extends Application {
                         }
                     }
                 };
-                listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        File item = (File) listCell.getItem();
-                        Media song = new Media(item.toURI().toASCIIString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(song);
-                        /* wenn bereits Song spielt, stoppe diesen, starte den neuen,
-                        wenn auf den selben Song geklickt wurde - 1 klick - pause, doppelklick, neu spielen?
-                        wenn pausiert, song fortsetzen (1 Klick)
-                         */
-                        mediaPlayer.play();
-                    }
+                listCell.setOnMouseClicked(event -> {
+                    File item = (File) listCell.getItem();
+                    Media song = new Media(item.toURI().toASCIIString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(song);
+                    mediaPlayer.play();
                 });
                 return listCell;
             }
@@ -63,15 +55,12 @@ public class Main extends Application {
 
         Button btnOpen = new Button("Open");
         btnOpen.getStyleClass().add("button");
-        btnOpen.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                DirectoryChooser directoryChooser = new DirectoryChooser();
-                directoryChooser.setTitle("Select Music Library");
-                File folder = directoryChooser.showDialog(primaryStage);
-                settingsManager.saveText("library", folder.getAbsolutePath());
-                loadLibrary();
-            }
+        btnOpen.setOnAction(event -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Select Music Library");
+            File folder = directoryChooser.showDialog(primaryStage);
+            settingsManager.saveText("library", folder.getAbsolutePath());
+            loadLibrary();
         });
 
 
@@ -81,9 +70,8 @@ public class Main extends Application {
             boolean btnStatus = true;
 
             @Override
-
             public void handle(ActionEvent event) {
-                if (btnStatus == true) {
+                if (btnStatus) {
                     btnPlay.setText("||");
                     btnStatus = false;
                 } else {
@@ -91,13 +79,10 @@ public class Main extends Application {
                     btnStatus = true;
                 }
             }
+
         });
 
-        /*weitere Buttons: Stop, vor- bzw. zurück
-
-         */
-
-
+        // weitere Buttons: Stop, vor- bzw. zurück
         BorderPane borderPane = new BorderPane();
         ToolBar toolbar = new ToolBar(btnOpen);
         HBox statusbar = new HBox(btnPlay);
