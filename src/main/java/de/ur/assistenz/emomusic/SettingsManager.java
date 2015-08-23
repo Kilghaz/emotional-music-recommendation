@@ -32,7 +32,7 @@ public class SettingsManager {
     }
 
     private void createDatabaseConnection() {
-        this.derby = DatabaseAdapter.getInstance().getAdapter();
+        this.derby = DatabaseAdapterProvider.getInstance().getAdapter();
     }
 
     private void save(Setting setting) {
