@@ -27,7 +27,7 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) {
         settingsManager = SettingsManager.getInstance();
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("E.M.O. Music Player");
         ListView appContent = new ListView<>();
         appContent.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
