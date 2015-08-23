@@ -28,13 +28,12 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) {
         settingsManager = SettingsManager.getInstance();
-
         primaryStage.setTitle("Hello World!");
         ListView appContent = new ListView<>();
         appContent.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
             public ListCell call(ListView param) {
-                ListCell listCell = new ListCell(){
+                ListCell listCell = new ListCell() {
                     @Override
                     protected void updateItem(Object item, boolean empty) {
                         super.updateItem(item, empty);
@@ -80,14 +79,14 @@ public class Main extends Application {
         btnPlay.getStyleClass().add("button");
         btnPlay.setOnAction(new EventHandler<ActionEvent>() {
             boolean btnStatus = true;
+
             @Override
 
             public void handle(ActionEvent event) {
                 if (btnStatus == true) {
                     btnPlay.setText("||");
                     btnStatus = false;
-                }
-                else {
+                } else {
                     btnPlay.setText(">");
                     btnStatus = true;
                 }
@@ -118,8 +117,7 @@ public class Main extends Application {
 
         try {
             loadLibrary();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -50,5 +50,5 @@ crashlytics-build.properties
 .DS_Store
 
 # Derby
-.settings
+.database
 derby.log
