@@ -17,6 +17,8 @@ public class PlayerController implements PlaylistModelObserver, PlaylistViewObse
     private ToolbarView toolbar;
     private MusicLibraryModel musicLibraryModel;
 
+    private boolean isPlaying = false;
+
     public void init() {
         List<Song> songs = musicLibraryModel.fetchSongs();
         playlistView.getItems().addAll(songs);
@@ -66,17 +68,26 @@ public class PlayerController implements PlaylistModelObserver, PlaylistViewObse
 
     @Override
     public void onSongSelected(int index, Song song) {
+        audioPlayer.changeSong(song);
+        audioPlayer.play();
         playlistModel.selectSong(index);
+        playerControlsView.onPlay();
     }
 
     @Override
     public void onPlayButtonClicked(ActionEvent event) {
-        audioPlayer.play();
+        if(isPlaying) {
+            audioPlayer.pause();
+            playerControlsView.onPause();
+        }
+        else {
+            audioPlayer.play();
+            playerControlsView.onPlay();
+        }
     }
 
     @Override
     public void onProgressBarDrag(DragEvent event) {
-        // TODO: set audio player progress
     }
 
     @Override
@@ -123,6 +134,21 @@ public class PlayerController implements PlaylistModelObserver, PlaylistViewObse
         playlistView.getItems().removeIf(songToRemove -> songToRemove.getName().equals(song.getName()));
         playlistView.getItems().add(song);
         playlistView.sort();
+    }
+
+    @Override
+    public void onPlay() {
+        isPlaying = true;
+    }
+
+    @Override
+    public void onPause() {
+        isPlaying = false;
+    }
+
+    @Override
+    public void onStop() {
+        isPlaying = false;
     }
 
 }

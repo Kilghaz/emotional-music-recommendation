@@ -5,6 +5,8 @@ import de.ur.assistenz.emomusic.sql.Song;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
+
 public class AudioPlayer {
 
     private MediaPlayer mediaPlayer;
@@ -16,8 +18,11 @@ public class AudioPlayer {
 
     public void changeSong(Song song){
         stop();
-        Media media = new Media(song.getUrl());
+        Media media = new Media(new File(song.getUrl()).toURI().toASCIIString());
         mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnPlaying(observer::onPlay);
+        mediaPlayer.setOnPaused(observer::onPause);
+        mediaPlayer.setOnStopped(observer::onStop);
         mediaPlayer.setOnEndOfMedia(this::stop);
         mediaPlayer.setOnError(observer::onPlayError);
     }
@@ -52,6 +57,18 @@ public class AudioPlayer {
 
         @Override
         public void onPlayError() {}
+
+        @Override
+        public void onPlay() {
+        }
+
+        @Override
+        public void onPause() {
+        }
+
+        @Override
+        public void onStop() {
+        }
 
     }
 
