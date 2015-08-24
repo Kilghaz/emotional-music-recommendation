@@ -1,5 +1,17 @@
-.button { -fx-background-color: white; -fx-border-radius: 0; -fx-text-fill: black; -fx-background-radius: 0; -fx-border-color: gray; }
+.button, .button:hover { -fx-background-color: #1A454D; -fx-text-fill: #EBEBEB; -fx-border-width: 0; -fx-font-weight: bold; }
 
-.button:hover { -fx-background-color: #f0f0f0; }
+.button:hover { -fx-background-color: #205660; -fx-border-color: #205660; -fx-border-width: 0; -fx-cursor: hand; }
 
-.btn-play { -fx-background-color: red; }
+.playlist { -fx-background-color: #16272B; }
+
+.song { -fx-background-color: #121A1C; -fx-text-fill: #EBEBEB; -fx-border-width: 1px; -fx-border-color: #16272B transparent transparent transparent; }
+
+.song:hover { -fx-background-color: #162023; }
+
+* { -fx-font-family: Helvetica, Arial, sans-serif; }
+
+.player-window { -fx-background-color: #16272B; }
+
+.toolbar { -fx-background-color: #16272B; -fx-padding: 5px; }
+
+.controls { -fx-padding: 5px; }

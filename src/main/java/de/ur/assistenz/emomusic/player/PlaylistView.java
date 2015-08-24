@@ -24,6 +24,7 @@ public class PlaylistView extends ListView<Song> {
         setCellFactory(new SongCellFactory());
         songs = FXCollections.observableList(new ArrayList<>());
         setItems(songs);
+        this.getStyleClass().add("playlist");
     }
 
     public void setObserver(PlaylistViewObserver observer) {

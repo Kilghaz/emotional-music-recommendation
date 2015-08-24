@@ -1,15 +1,21 @@
-.button {
-    -fx-background-color: white;
-    -fx-border-radius: 0;
-    -fx-text-fill: black;
-    -fx-background-radius: 0;
-    -fx-border-color: gray;
+.button, .button:hover {
+    -fx-background-color: $color-background-light;
+    -fx-text-fill: $color-foreground;
+    -fx-border-width: 0;
+    -fx-font-weight: bold;
 }
 
 .button:hover {
-    -fx-background-color: rgb(240, 240, 240);
+    -fx-background-color: $color-background-light * 1.25;
+    -fx-border-color: $color-background-light * 1.25;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
 }
 
 .btn-play {
-    -fx-background-color: red;
+
+}
+
+.btn-pause {
+
 }

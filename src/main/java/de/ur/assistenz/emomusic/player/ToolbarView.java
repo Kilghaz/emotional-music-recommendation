@@ -17,6 +17,7 @@ public class ToolbarView extends ToolBar {
 
     public ToolbarView(Stage stage){
         this.stage = stage;
+        this.getStyleClass().add("toolbar");
         initGUI();
     }
 

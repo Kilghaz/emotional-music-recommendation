@@ -12,6 +12,7 @@ public class PlayerControlsView extends HBox {
 
     public PlayerControlsView(){
         this.initGUI();
+        this.getStyleClass().add("controls");
     }
 
     public void setObserver(PlayerControlsObserver observer) {

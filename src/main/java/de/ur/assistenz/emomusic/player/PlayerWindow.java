@@ -29,6 +29,7 @@ public class PlayerWindow {
         stage.setTitle("E.M.O. Music Player");
 
         BorderPane layout = new BorderPane();
+        layout.getStyleClass().add("player-window");
         layout.setTop(toolbar);
         layout.setCenter(playlistView);
         layout.setBottom(playerControlsView);

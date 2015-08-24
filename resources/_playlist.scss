@@ -1,0 +1,14 @@
+.playlist {
+    -fx-background-color: $color-background;
+}
+
+.song {
+    -fx-background-color: $color-background-dark;
+    -fx-text-fill: $color-foreground;
+    -fx-border-width: 1px;
+    -fx-border-color: $color-background transparent transparent transparent;
+}
+
+.song:hover {
+    -fx-background-color: $color-background-dark * 1.25;
+}
