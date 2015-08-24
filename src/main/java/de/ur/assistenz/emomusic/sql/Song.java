@@ -9,7 +9,7 @@ import de.hijacksoft.oosql.SQLTable;
 public class Song {
 
     @SQLColumn(value = "id", autoIncrement = true)
-    private int id;
+    private Integer id;
 
     @SQLColumn("name")
     private String name;
@@ -18,7 +18,7 @@ public class Song {
     private String url;
 
     @SQLColumn("skip_count")
-    private int skipCount;
+    private Integer skipCount;
 
     @SQLColumn("emotion")
     private String emotion;
