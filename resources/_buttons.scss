@@ -1,0 +1,15 @@
+.button {
+    -fx-background-color: white;
+    -fx-border-radius: 0;
+    -fx-text-fill: black;
+    -fx-background-radius: 0;
+    -fx-border-color: gray;
+}
+
+.button:hover {
+    -fx-background-color: rgb(240, 240, 240);
+}
+
+.btn-play {
+    -fx-background-color: red;
+}

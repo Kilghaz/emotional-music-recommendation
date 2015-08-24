@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 
 public class PlayerWindow {
 
+    private static final String STYLESHEET = "style.css";
+
     private Stage stage;
     private PlayerController controller = new PlayerController();
 
@@ -32,6 +34,8 @@ public class PlayerWindow {
         layout.setBottom(playerControlsView);
 
         Scene scene = new Scene(layout, 500, 400);
+        scene.getStylesheets().addAll(STYLESHEET);
+
         stage.setScene(scene);
         stage.show();
     }
