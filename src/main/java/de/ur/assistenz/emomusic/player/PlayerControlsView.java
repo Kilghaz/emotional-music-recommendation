@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 
 public class PlayerControlsView extends HBox {
 
-    private Button buttonPlay = new Button("Play");
+    private Button buttonPlay = new Button();
     private Slider progressSlider = new Slider();
 
     public PlayerControlsView(){
@@ -36,13 +36,11 @@ public class PlayerControlsView extends HBox {
     public void onPlay() {
         this.buttonPlay.getStyleClass().removeAll("btn-play", "btn-pause");
         this.buttonPlay.getStyleClass().addAll("button", "btn-pause");
-        this.buttonPlay.setText("Pause");
     }
 
     public void onPause() {
         this.buttonPlay.getStyleClass().removeAll("btn-play", "btn-pause");
         this.buttonPlay.getStyleClass().addAll("button", "btn-play");
-        this.buttonPlay.setText("Play");
     }
 
 }

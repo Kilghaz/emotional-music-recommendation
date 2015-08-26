@@ -9,13 +9,21 @@
     -fx-background-color: $color-background-light * 1.25;
     -fx-border-color: $color-background-light * 1.25;
     -fx-border-width: 0;
-    -fx-cursor: hand;
+}
+
+.btn-play:hover, .btn-pause:hover {
+    -fx-background-color: transparent;
 }
 
 .btn-play {
-
+    -fx-background-color: transparent;
+    -fx-background-image: url("images/btn-play.png");
+    -fx-background-size: 160px;
 }
 
 .btn-pause {
-
+    -fx-background-color: transparent;
+    -fx-background-image: url("images/btn-play.png");
+    -fx-background-size: 160px;
+    -fx-background-position: -80px;
 }

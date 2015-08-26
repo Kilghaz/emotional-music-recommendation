@@ -1,6 +1,12 @@
 .button, .button:hover { -fx-background-color: #1A454D; -fx-text-fill: #EBEBEB; -fx-border-width: 0; -fx-font-weight: bold; }
 
-.button:hover { -fx-background-color: #205660; -fx-border-color: #205660; -fx-border-width: 0; -fx-cursor: hand; }
+.button:hover { -fx-background-color: #205660; -fx-border-color: #205660; -fx-border-width: 0; }
+
+.btn-play:hover, .btn-pause:hover { -fx-background-color: transparent; }
+
+.btn-play { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; }
+
+.btn-pause { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; -fx-background-position: -80px; }
 
 .playlist { -fx-background-color: #16272B; }
 
