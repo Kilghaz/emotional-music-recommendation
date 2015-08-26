@@ -22,7 +22,12 @@ public class PlayerControlsView extends HBox {
 
     private void initGUI() {
         this.buttonPlay.getStyleClass().addAll("button", "btn-play");
+        this.buttonPlay.setPrefHeight(80);
+        this.buttonPlay.setPrefWidth(80);
+        this.buttonPlay.setMinWidth(80);
+
         this.progressSlider.getStyleClass().add("progress-slider");
+        this.progressSlider.setPrefWidth(100000);
 
         this.getChildren().add(buttonPlay);
         this.getChildren().add(progressSlider);

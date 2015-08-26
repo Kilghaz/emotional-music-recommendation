@@ -14,4 +14,8 @@
 
 .toolbar { -fx-background-color: #16272B; -fx-padding: 5px; }
 
-.controls { -fx-padding: 5px; }
+.controls { -fx-padding: 5px; -fx-background-color: #1b3035; }
+
+.slider { -fx-padding: 25px 10px 25px 10px; }
+.slider .thumb { -fx-background-color: #FF4E50; -fx-border-radius: 0px; }
+.slider .track { -fx-background-color: #1A454D; }
