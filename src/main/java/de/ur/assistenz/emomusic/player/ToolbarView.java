@@ -31,7 +31,9 @@ public class ToolbarView extends ToolBar {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Music Library");
         File folder = directoryChooser.showDialog(this.stage);
-        observer.onLibraryFolderSelected(folder);
+        if(folder != null) {
+            observer.onLibraryFolderSelected(folder);
+        }
     }
 
     public void setObserver(ToolbarViewObserver observer) {
