@@ -2,8 +2,10 @@ package de.ur.assistenz.emomusic.player;
 
 import de.ur.assistenz.emomusic.player.Listener.AudioPlayerObserver;
 import de.ur.assistenz.emomusic.sql.Song;
+import javafx.beans.Observable;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.io.File;
 
@@ -25,6 +27,7 @@ public class AudioPlayer {
         mediaPlayer.setOnStopped(observer::onStop);
         mediaPlayer.setOnEndOfMedia(this::stop);
         mediaPlayer.setOnError(observer::onPlayError);
+        mediaPlayer.currentTimeProperty().addListener(observer::onProgress);
     }
 
     public void play(){
@@ -50,6 +53,14 @@ public class AudioPlayer {
         observer.onSongFinished();
     }
 
+    public Duration getCurrentTime() {
+        return mediaPlayer.getCurrentTime();
+    }
+
+    public Duration getSongLength() {
+        return mediaPlayer.getStopTime();
+    }
+
     private class NullObserver implements AudioPlayerObserver {
 
         @Override
@@ -59,8 +70,7 @@ public class AudioPlayer {
         public void onPlayError() {}
 
         @Override
-        public void onPlay() {
-        }
+        public void onPlay() {}
 
         @Override
         public void onPause() {
@@ -69,6 +79,9 @@ public class AudioPlayer {
         @Override
         public void onStop() {
         }
+
+        @Override
+        public void onProgress(Observable observable) {}
 
     }
 

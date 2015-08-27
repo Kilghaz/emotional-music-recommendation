@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4" />
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Derby -" uuid="dc9e5d54-5c44-4ce6-bbce-e0838a52f62d">
+      <secret-storage>memory</secret-storage>
+    </data-source>
+  </component>
+</project>

@@ -4,6 +4,7 @@ import de.ur.assistenz.emomusic.player.Listener.PlayerControlsObserver;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 public class PlayerControlsView extends HBox {
 
@@ -31,6 +32,12 @@ public class PlayerControlsView extends HBox {
 
         this.getChildren().add(buttonPlay);
         this.getChildren().add(progressSlider);
+    }
+
+    public void updateProgressSliderPosition(Duration currentTime, Duration maxTime) {
+        if(this.progressSlider.isValueChanging()) return;
+        this.progressSlider.setMax(maxTime.toMillis());
+        this.progressSlider.setValue(currentTime.toMillis());
     }
 
     public void onPlay() {

@@ -2,8 +2,10 @@ package de.ur.assistenz.emomusic.player;
 
 import de.ur.assistenz.emomusic.player.Listener.*;
 import de.ur.assistenz.emomusic.sql.Song;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.scene.input.DragEvent;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.util.List;
@@ -149,6 +151,13 @@ public class PlayerController implements PlaylistModelObserver, PlaylistViewObse
     @Override
     public void onStop() {
         isPlaying = false;
+    }
+
+    @Override
+    public void onProgress(Observable observable) {
+        Duration currentTime = audioPlayer.getCurrentTime();
+        Duration maxTime = audioPlayer.getSongLength();
+        playerControlsView.updateProgressSliderPosition(currentTime, maxTime);
     }
 
 }
