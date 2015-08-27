@@ -18,7 +18,11 @@ public class PlayerControlsView extends HBox {
 
     public void setObserver(PlayerControlsObserver observer) {
         this.buttonPlay.setOnAction(observer::onPlayButtonClicked);
-        this.progressSlider.setOnDragDone(observer::onProgressBarDrag);
+        this.progressSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            if(this.progressSlider.isPressed()) {
+                observer.onProgressBarValueChanged(progressSlider.getValue());
+            }
+        });
     }
 
     private void initGUI() {

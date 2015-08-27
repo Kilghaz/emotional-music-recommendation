@@ -6,6 +6,6 @@ import javafx.scene.input.DragEvent;
 public interface PlayerControlsObserver {
 
     void onPlayButtonClicked(ActionEvent event);
-    void onProgressBarDrag(DragEvent event);
+    void onProgressBarValueChanged(double value);
 
 }

@@ -4,7 +4,6 @@ import de.ur.assistenz.emomusic.player.Listener.*;
 import de.ur.assistenz.emomusic.sql.Song;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
-import javafx.scene.input.DragEvent;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -89,7 +88,8 @@ public class PlayerController implements PlaylistModelObserver, PlaylistViewObse
     }
 
     @Override
-    public void onProgressBarDrag(DragEvent event) {
+    public void onProgressBarValueChanged(double value) {
+        this.audioPlayer.seek(value);
     }
 
     @Override

@@ -61,6 +61,10 @@ public class AudioPlayer {
         return mediaPlayer.getStopTime();
     }
 
+    public void seek(double millis) {
+        this.mediaPlayer.seek(new Duration(millis));
+    }
+
     private class NullObserver implements AudioPlayerObserver {
 
         @Override
