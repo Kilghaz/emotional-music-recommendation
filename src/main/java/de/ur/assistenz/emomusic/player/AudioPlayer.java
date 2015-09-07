@@ -65,22 +65,18 @@ public class AudioPlayer {
         mediaPlayer.setOnError(() -> eventSender.notify(EVENT_ERROR));
         mediaPlayer.currentTimeProperty().addListener(observable -> eventSender.notify(EVENT_PROGRESS));
         mediaPlayer.setOnEndOfMedia(() -> {
-            eventSender.notify(EVENT_END_OF_MEDIA);
             this.stop();
+            eventSender.notify(EVENT_END_OF_MEDIA);
         });
     }
 
     public void play(){
-        if(mediaPlayer == null) {
-            return;
-        }
+        if(this.mediaPlayer == null) return;
         mediaPlayer.play();
     }
 
     public void pause(){
-        if(mediaPlayer == null) {
-            return;
-        }
+        if(this.mediaPlayer == null) return;
         mediaPlayer.pause();
     }
 
@@ -98,10 +94,12 @@ public class AudioPlayer {
     }
 
     public Duration getCurrentTime() {
+        if(this.mediaPlayer == null) return new Duration(0);
         return mediaPlayer.getCurrentTime();
     }
 
     public Duration getSongLength() {
+        if(this.mediaPlayer == null) return new Duration(0);
         return mediaPlayer.getStopTime();
     }
 

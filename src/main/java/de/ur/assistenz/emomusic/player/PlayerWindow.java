@@ -46,6 +46,7 @@ public class PlayerWindow {
     private void initController() {
         audioPlayer.onPlay((sender, event) -> playerControlsView.onPlay());
         audioPlayer.onPause((sender, event) -> playerControlsView.onPause());
+        audioPlayer.onStop((sender, event) -> playerControlsView.onPause());
 
         audioPlayer.onProgress((sender, event) -> {
             Duration currentTime = audioPlayer.getCurrentTime();
@@ -53,9 +54,7 @@ public class PlayerWindow {
             playerControlsView.updateProgressSliderPosition(currentTime, maxTime);
         });
 
-        audioPlayer.onEndOfMedia((sender, event) -> {
-            playlistModel.next();
-        });
+        audioPlayer.onEndOfMedia((sender, event) -> playlistModel.next());
 
         musicLibraryModel.onSongAdded(this::onMusicLibraryUpdated);
         musicLibraryModel.onSongUpdated(this::onMusicLibraryUpdated);
@@ -63,7 +62,8 @@ public class PlayerWindow {
 
         playerControlsView.onSeekerMoved((sender, event) -> audioPlayer.seek(playerControlsView.getSeekerValue()));
         playerControlsView.onPlayClicked((sender, event) -> {
-            if(audioPlayer.isPlaying()) audioPlayer.pause(); else audioPlayer.play();
+            if (audioPlayer.isPlaying()) audioPlayer.pause();
+            else audioPlayer.play();
         });
 
         playlistModel.onSongChanged((sender, event) -> {
