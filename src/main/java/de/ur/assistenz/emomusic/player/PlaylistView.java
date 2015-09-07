@@ -5,7 +5,6 @@ import de.ur.assistenz.emomusic.player.Observer.EventSender;
 import de.ur.assistenz.emomusic.player.Observer.SongEvent;
 import de.ur.assistenz.emomusic.sql.Song;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.control.ListCell;
@@ -21,15 +20,13 @@ public class PlaylistView extends ListView<Song> {
     private static final String CSS_CLASS_PLAYING = "playing";
     private static final String CSS_CLASS_SONG = "song";
 
-    private ObservableList<Song> songs;
     private int currentlyPlaying;
 
     private EventSender<SongEvent> eventSender = new EventSender<>();
 
     public PlaylistView() {
         setCellFactory(new SongCellFactory());
-        songs = FXCollections.observableList(new ArrayList<>());
-        setItems(songs);
+        setItems(FXCollections.observableList(new ArrayList<>()));
         this.eventSender.register(EVENT_SONG_SELECTED);
         this.getStyleClass().add("playlist");
     }
@@ -82,10 +79,6 @@ public class PlaylistView extends ListView<Song> {
             return listCell;
         }
 
-    }
-
-    public void sort() {
-        getItems().sort((a, b) -> a.getName().compareTo(b.getName()));
     }
 
 }

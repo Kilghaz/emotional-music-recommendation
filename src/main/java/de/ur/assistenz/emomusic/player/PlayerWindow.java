@@ -75,7 +75,6 @@ public class PlayerWindow {
         playlistModel.onListChanged((sender, event) -> {
             playlistView.getItems().clear();
             playlistView.getItems().addAll(playlistModel.getSongs());
-            playlistView.sort();
         });
 
         playlistView.onSongSelected((sender, event) -> playlistModel.setCurrentSong(event.getSong()));
