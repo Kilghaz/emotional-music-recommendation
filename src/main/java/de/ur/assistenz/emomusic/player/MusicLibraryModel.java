@@ -3,7 +3,9 @@ package de.ur.assistenz.emomusic.player;
 import de.hijacksoft.oosql.DerbyAdapter;
 import de.ur.assistenz.emomusic.DatabaseAdapterProvider;
 import de.ur.assistenz.emomusic.SettingsManager;
-import de.ur.assistenz.emomusic.player.Listener.MusicLibraryModelObserver;
+import de.ur.assistenz.emomusic.player.Observer.EventReceiver;
+import de.ur.assistenz.emomusic.player.Observer.EventSender;
+import de.ur.assistenz.emomusic.player.Observer.SongEvent;
 import de.ur.assistenz.emomusic.sql.Song;
 import javafx.application.Platform;
 
@@ -14,14 +16,25 @@ public class MusicLibraryModel {
 
     private static final String SETTING_LIBRARY_FOLDER = "library_folder";
 
+    private static final String EVENT_SCAN_STARTED = "scan_started";
+    private static final String EVENT_SCAN_FINISHED = "scan_started";
+    private static final String EVENT_SONG_UPDATED = "song_update";
+    private static final String EVENT_SONG_ADDED = "song_add";
+    private static final String EVENT_SONG_DELETED = "song_delete";
+
     private static MusicLibraryModel instance = null;
     private DerbyAdapter derby;
     private SettingsManager settings = SettingsManager.getInstance();
-    private MusicLibraryModelObserver observer = new NullObserver();
+    private EventSender<SongEvent> eventSender = new EventSender<>();
 
     private MusicLibraryModel(){
         this.derby = DatabaseAdapterProvider.getInstance().getAdapter();
         initializeDatabase();
+        this.eventSender.register(EVENT_SCAN_FINISHED);
+        this.eventSender.register(EVENT_SCAN_STARTED);
+        this.eventSender.register(EVENT_SONG_UPDATED);
+        this.eventSender.register(EVENT_SONG_ADDED);
+        this.eventSender.register(EVENT_SONG_DELETED);
         instance = this;
     }
 
@@ -33,6 +46,26 @@ public class MusicLibraryModel {
         if(!derby.doesTableExist("library")) {
             derby.createTable(Song.class);
         }
+    }
+
+    public void onSongAdded(EventReceiver<SongEvent> eventReceiver) {
+        eventSender.on(EVENT_SONG_ADDED, eventReceiver);
+    }
+
+    public void onSongDeleted(EventReceiver<SongEvent> eventReceiver) {
+        eventSender.on(EVENT_SONG_DELETED, eventReceiver);
+    }
+
+    public void onSongUpdated(EventReceiver<SongEvent> eventReceiver) {
+        eventSender.on(EVENT_SONG_UPDATED, eventReceiver);
+    }
+
+    public void onScanStarted(EventReceiver receiver) {
+        eventSender.on(EVENT_SCAN_STARTED, receiver);
+    }
+
+    public void onScanFinished(EventReceiver receiver) {
+        eventSender.on(EVENT_SCAN_FINISHED, receiver);
     }
 
     public void setLibraryFolder(File file) {
@@ -54,28 +87,24 @@ public class MusicLibraryModel {
 
     public void addSong(Song song) {
         derby.insert(song);
-        Platform.runLater(() -> observer.onSongAdded(song));
+        Platform.runLater(() -> eventSender.notify(EVENT_SONG_ADDED, new SongEvent(song)));
     }
 
     public void deleteSong(Song song) {
         derby.delete(song);
-        Platform.runLater(() -> observer.onSongDeleted(song));
+        Platform.runLater(() -> eventSender.notify(EVENT_SONG_DELETED, new SongEvent(song)));
     }
 
     public void updateSong(Song song) {
         derby.update(song);
-        Platform.runLater(() -> observer.onSongUpdated(song));
-    }
-
-    public void setObserver(MusicLibraryModelObserver observer) {
-        this.observer = observer;
+        Platform.runLater(() -> eventSender.notify(EVENT_SONG_UPDATED, new SongEvent(song)));
     }
 
     private class ScanThread extends Thread implements Runnable {
 
         @Override
         public void run() {
-            Platform.runLater(observer::onScanStarted);
+            Platform.runLater(() -> eventSender.notify(EVENT_SCAN_STARTED));
             String libraryFolderURL = settings.loadText(SETTING_LIBRARY_FOLDER);
             if(libraryFolderURL == null) return;
             File folder = new File(libraryFolderURL);
@@ -86,27 +115,9 @@ public class MusicLibraryModel {
                 song.setUrl(file.getAbsolutePath());
                 addSong(song);
             }
-            Platform.runLater(observer::onScanFinished);
+            Platform.runLater(() -> eventSender.notify(EVENT_SCAN_FINISHED));
         }
 
     }
 
-    private class NullObserver implements MusicLibraryModelObserver {
-
-        @Override
-        public void onScanFinished() {}
-
-        @Override
-        public void onScanStarted() {}
-
-        @Override
-        public void onSongAdded(Song song) {}
-
-        @Override
-        public void onSongDeleted(Song song) {}
-
-        @Override
-        public void onSongUpdated(Song song) {}
-
-    }
 }

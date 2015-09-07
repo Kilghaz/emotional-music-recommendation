@@ -1,9 +1,13 @@
 package de.ur.assistenz.emomusic.player;
 
-import de.ur.assistenz.emomusic.player.Listener.PlaylistViewObserver;
+import de.ur.assistenz.emomusic.player.Observer.EventReceiver;
+import de.ur.assistenz.emomusic.player.Observer.EventSender;
+import de.ur.assistenz.emomusic.player.Observer.SongEvent;
 import de.ur.assistenz.emomusic.sql.Song;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
@@ -12,28 +16,41 @@ import java.util.ArrayList;
 
 public class PlaylistView extends ListView<Song> {
 
+    private static final String EVENT_SONG_SELECTED = "song_selected";
+
     private static final String CSS_CLASS_PLAYING = "playing";
     private static final String CSS_CLASS_SONG = "song";
 
     private ObservableList<Song> songs;
     private int currentlyPlaying;
 
-    private PlaylistViewObserver observer = new NullObserver();
+    private EventSender<SongEvent> eventSender = new EventSender<>();
 
     public PlaylistView() {
         setCellFactory(new SongCellFactory());
         songs = FXCollections.observableList(new ArrayList<>());
         setItems(songs);
+        this.eventSender.register(EVENT_SONG_SELECTED);
         this.getStyleClass().add("playlist");
-    }
-
-    public void setObserver(PlaylistViewObserver observer) {
-        this.observer = observer;
     }
 
     public void setCurrentlyPlaying(int index) {
         this.currentlyPlaying = index;
-        this.songs.notifyAll(); // send update to render list
+        triggerUpdate(null, -1);
+    }
+
+    private void triggerUpdate(Song newValue, int index) {
+        triggerUpdate(this, newValue, index);
+    }
+
+    private static <T> void triggerUpdate(ListView<T> listView, T newValue, int i) {
+        EventType<? extends EditEvent<T>> type = ListView.editCommitEvent();
+        Event event = new ListView.EditEvent<>(listView, type, newValue, i);
+        listView.fireEvent(event);
+    }
+
+    public void onSongSelected(EventReceiver<SongEvent> receiver) {
+        this.eventSender.on(EVENT_SONG_SELECTED, receiver);
     }
 
     private class SongCellFactory implements Callback<ListView<Song>, ListCell<Song>>{
@@ -57,7 +74,9 @@ public class PlaylistView extends ListView<Song> {
             };
 
             listCell.setOnMouseClicked(event -> {
-                observer.onSongSelected(listCell.getIndex(), listCell.getItem());
+                SongEvent songEvent = new SongEvent(listCell.getItem());
+                songEvent.put("index", listCell.getIndex());
+                eventSender.notify(EVENT_SONG_SELECTED, songEvent);
             });
 
             return listCell;
@@ -67,13 +86,6 @@ public class PlaylistView extends ListView<Song> {
 
     public void sort() {
         getItems().sort((a, b) -> a.getName().compareTo(b.getName()));
-    }
-
-    private class NullObserver implements PlaylistViewObserver {
-
-        @Override
-        public void onSongSelected(int index, de.ur.assistenz.emomusic.sql.Song song) {}
-
     }
 
 }
