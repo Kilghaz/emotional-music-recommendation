@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectTasksOptions">
-    <TaskOptions isEnabled="false">
+    <TaskOptions isEnabled="true">
       <option name="arguments" value="--no-cache --update --style compact --scss --sourcemap=none --default-encoding utf-8 --quiet style.scss:style.css" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" value="Compiles .scss files into .css files" />
@@ -21,7 +21,7 @@
       <option name="workingDir" value="$ProjectFileDir$/resources" />
       <envs />
     </TaskOptions>
-    <TaskOptions isEnabled="true">
+    <TaskOptions isEnabled="false">
       <option name="arguments" value="--no-cache --update --style compact --scss --sourcemap=none --default-encoding utf-8 --quiet style.scss:style.css" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" value="Compiles .scss files into .css files" />

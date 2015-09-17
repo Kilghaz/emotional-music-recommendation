@@ -41,7 +41,7 @@ public class PlayerWindow {
         layout.setCenter(playlistView);
         layout.setBottom(playerControlsView);
 
-        Scene scene = new Scene(layout, 500, 400);
+        Scene scene = new Scene(layout, 902, 800);
         scene.getStylesheets().addAll(STYLESHEET);
 
         stage.setScene(scene);

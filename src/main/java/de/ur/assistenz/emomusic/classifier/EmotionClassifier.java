@@ -22,7 +22,7 @@ public class EmotionClassifier {
     private Classifier classifier;
     private FastVector featureVectorDefinition;
 
-    private double kappaThreshold = 0.5;
+    private double kappaThreshold = 0.50;
 
     public EmotionClassifier() {
         instance = this;
@@ -214,6 +214,7 @@ public class EmotionClassifier {
 
     public void setKappaThreshold(double kappaThreshold) {
         this.kappaThreshold = kappaThreshold;
+        train();
     }
 
 }
