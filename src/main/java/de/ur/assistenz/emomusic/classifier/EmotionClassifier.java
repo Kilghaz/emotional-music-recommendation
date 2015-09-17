@@ -79,7 +79,7 @@ public class EmotionClassifier {
             trainingSet.add(featureVector);
         }
 
-        this.classifier = new NaiveBayes(); // TODO: change to better classifier maybe
+        this.classifier = new NaiveBayes(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
         try {
             this.classifier.buildClassifier(trainingSet);
         } catch (Exception e) {
