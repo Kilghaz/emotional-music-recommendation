@@ -9,7 +9,7 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.core.*;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,9 +18,11 @@ public class EmotionClassifier {
     private Classifier classifier;
 
     private static EmotionClassifier instance = null;
+    private FastVector featureVectorDefinition;
 
     public EmotionClassifier() {
         instance = this;
+        this.featureVectorDefinition = createFeatureVectorDefinition();
         train();
     }
 
@@ -52,24 +54,27 @@ public class EmotionClassifier {
         definitionVector.addElement(new Attribute("mfcc_13"));
         definitionVector.addElement(new Attribute("spectral_flux"));
 
-        // TODO: add more features
-
         return definitionVector;
     }
 
     private void train() {
-        List<HashMap<String, Object>> values = new ArrayList<>();
-        // TODO: READ CSV
-        FastVector definitionVector = createFeatureVectorDefinition();
-        Instances trainingSet = new Instances("training_set", definitionVector, values.size());
+        TrainingDataLoader dataLoader = new TrainingDataLoader();
+        try {
+            dataLoader.read("training_data.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<HashMap<String, String>> values = dataLoader.getInstances();
+
+        Instances trainingSet = new Instances("training_set", featureVectorDefinition, values.size());
         trainingSet.setClassIndex(0);
 
-        for(HashMap<String, Object> songFeatures : values) {
-            Instance featureVector = new SparseInstance(definitionVector.capacity());
-            featureVector.setValue((Attribute) definitionVector.elementAt(0), (String) songFeatures.get("emotion"));
-            for(int i = 1; i < definitionVector.capacity(); i++) {
-                Attribute attr = (Attribute) definitionVector.elementAt(i);
-                featureVector.setValue(attr, (Double) songFeatures.get(attr.name()));
+        for(HashMap<String, String> songFeatures : values) {
+            Instance featureVector = new SparseInstance(featureVectorDefinition.capacity());
+            featureVector.setValue((Attribute) featureVectorDefinition.elementAt(0), songFeatures.get("emotion"));
+            for(int i = 1; i < featureVectorDefinition.capacity(); i++) {
+                Attribute attr = (Attribute) featureVectorDefinition.elementAt(i);
+                featureVector.setValue(attr, Double.parseDouble(songFeatures.get(attr.name())));
             }
             trainingSet.add(featureVector);
         }
@@ -82,13 +87,22 @@ public class EmotionClassifier {
         }
     }
 
-    public Instance extractFeatures(File audioFile) {
+    private Instance extractFeatures(File audioFile) {
         XuggleAudio audio = new XuggleAudio(audioFile);
 
         double[] mfcc = calculateOverallAverageMFCC(audio);
         double spectralFlux = calculateOverallAverageSpectralFlux(audio);
 
-        return null;
+        Instance instance = new SparseInstance(15);
+
+        int mfccOffset = 1;
+
+        for(int i = 0; i < mfcc.length; i++) {
+            instance.setValue((Attribute)featureVectorDefinition.elementAt(i + mfccOffset), mfcc[i]);
+        }
+        instance.setValue((Attribute)featureVectorDefinition.elementAt(14), spectralFlux);
+
+        return instance;
     }
 
     private double calculateOverallAverageSpectralFlux(XuggleAudio audio) {
