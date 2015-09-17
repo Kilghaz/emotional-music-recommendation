@@ -2,6 +2,7 @@ package de.ur.assistenz.emomusic.classifier;
 
 import org.openimaj.audio.SampleChunk;
 import org.openimaj.audio.features.MFCC;
+import org.openimaj.audio.features.SpectralFlux;
 import org.openimaj.video.xuggle.XuggleAudio;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
@@ -49,6 +50,7 @@ public class EmotionClassifier {
         definitionVector.addElement(new Attribute("mfcc_11"));
         definitionVector.addElement(new Attribute("mfcc_12"));
         definitionVector.addElement(new Attribute("mfcc_13"));
+        definitionVector.addElement(new Attribute("spectral_flux"));
 
         // TODO: add more features
 
@@ -81,12 +83,31 @@ public class EmotionClassifier {
     }
 
     public Instance extractFeatures(File audioFile) {
-        // TODO: implement feature extraction
         XuggleAudio audio = new XuggleAudio(audioFile);
 
         double[] mfcc = calculateOverallAverageMFCC(audio);
+        double spectralFlux = calculateOverallAverageSpectralFlux(audio);
 
         return null;
+    }
+
+    private double calculateOverallAverageSpectralFlux(XuggleAudio audio) {
+        SpectralFlux spectralFlux = new SpectralFlux(audio);
+
+        SampleChunk sc = null;
+
+        double overallAverageSpectralFlux = 0;  // spectral flux has only 1 value
+        int length = 0;
+
+        while ((sc = spectralFlux.nextSampleChunk()) != null) {
+            double[][] values = spectralFlux.getLastCalculatedFeature();
+            for(double[] fluxValue : values) {
+                overallAverageSpectralFlux += fluxValue[0];  // spectral flux has only 1 value
+                length++;
+            }
+        }
+
+        return overallAverageSpectralFlux / length;
     }
 
     private double[] calculateOverallAverageMFCC(XuggleAudio audio) {
