@@ -22,9 +22,14 @@ public class PlayerWindow {
     private MusicLibraryModel musicLibraryModel = MusicLibraryModel.getInstance();
 
     public PlayerWindow(Stage stage) {
-        this.stage = stage;
-        initGUI();
-        initController();
+        try {
+            this.stage = stage;
+            initGUI();
+            initController();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initGUI() {

@@ -8,6 +8,10 @@ import de.ur.assistenz.emomusic.player.Observer.EventSender;
 import de.ur.assistenz.emomusic.player.Observer.SongEvent;
 import de.ur.assistenz.emomusic.sql.Song;
 import javafx.application.Platform;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
 import java.util.List;
@@ -26,6 +30,7 @@ public class MusicLibraryModel {
     private DerbyAdapter derby;
     private SettingsManager settings = SettingsManager.getInstance();
     private EventSender<SongEvent> eventSender = new EventSender<>();
+    // private EmotionClassifier classifier = new EmotionClassifier();
 
     private MusicLibraryModel(){
         this.derby = DatabaseAdapterProvider.getInstance().getAdapter();
@@ -85,6 +90,22 @@ public class MusicLibraryModel {
         return songs;
     }
 
+    public void addSong(File file) {
+        Song song = new Song();
+        song.setName(file.getName());
+        song.setUrl(file.getAbsolutePath());
+        // song.setEmotion(classifier.classify(file));
+        Tag tag = readSongMeta(file);
+        if(tag != null) {
+            String name = tag.getFirst(FieldKey.TITLE);
+            song.setName(name == null ? song.getName() : name);
+            song.setArtist(tag.getFirst(FieldKey.ARTIST));
+            song.setAlbum(tag.getFirst(FieldKey.ALBUM));
+            song.setYear(tag.getFirst(FieldKey.YEAR));
+        }
+        addSong(song);
+    }
+
     public void addSong(Song song) {
         derby.insert(song);
         Platform.runLater(() -> eventSender.notify(EVENT_SONG_ADDED, new SongEvent(song)));
@@ -110,14 +131,20 @@ public class MusicLibraryModel {
             File folder = new File(libraryFolderURL);
             File[] files = folder.listFiles((dir, name) -> name.endsWith("mp3") || name.endsWith("wav") || name.endsWith("m4a"));
             for (File file : files) {
-                Song song = new Song();
-                song.setName(file.getName());
-                song.setUrl(file.getAbsolutePath());
-                addSong(song);
+                addSong(file);
             }
             Platform.runLater(() -> eventSender.notify(EVENT_SCAN_FINISHED));
         }
 
+    }
+
+    private Tag readSongMeta(File file) {
+        try {
+            AudioFile audioFile = AudioFileIO.read(file);
+            return audioFile.getTag();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

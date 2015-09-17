@@ -20,6 +20,15 @@ public class Song {
     @SQLColumn("skip_count")
     private Integer skipCount;
 
+    @SQLColumn("artist")
+    private String artist;
+
+    @SQLColumn("album")
+    private String album;
+
+    @SQLColumn("year")
+    private String year;
+
     @SQLColumn("emotion")
     private String emotion;
 
@@ -55,4 +64,27 @@ public class Song {
         this.emotion = emotion;
     }
 
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
 }

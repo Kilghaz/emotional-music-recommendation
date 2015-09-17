@@ -88,6 +88,9 @@ public class PlaylistModel {
 
     public void setSongs(List<Song> songs) {
         this.songs = songs;
+        if(this.songs == null) {
+            this.songs = new ArrayList<>();
+        }
         eventSender.notify(EVENT_LIST_CHANGED);
     }
 
