@@ -16,9 +16,10 @@ import java.util.List;
 
 public class EmotionClassifier {
 
-    private Classifier classifier;
-
+    private static final String RELATION = "music_emotion";
     private static EmotionClassifier instance = null;
+
+    private Classifier classifier;
     private FastVector featureVectorDefinition;
 
     private double kappaThreshold = 0.5;
@@ -71,7 +72,7 @@ public class EmotionClassifier {
         }
         List<HashMap<String, String>> values = dataLoader.getInstances();
 
-        Instances trainingSet = new Instances("training_set", featureVectorDefinition, values.size());
+        Instances trainingSet = new Instances(RELATION, featureVectorDefinition, values.size());
         trainingSet.setClassIndex(0);
 
         for(HashMap<String, String> songFeatures : values) {
@@ -94,10 +95,11 @@ public class EmotionClassifier {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private Double getDoubleValue(String key, HashMap<String, String> songFeatures) {
-        return Double.parseDouble(songFeatures.get("fleiss_kappa_annotation").replace(",", "."));
+        return Double.parseDouble(songFeatures.get(key).replace(",", "."));
     }
 
     private String selectAnnotation(HashMap<String, String> instance) {
@@ -139,7 +141,7 @@ public class EmotionClassifier {
             instance.setValue((Attribute)featureVectorDefinition.elementAt(i + mfccOffset), mfcc[i]);
         }
 
-        Instances dataSet = new Instances("unlabled_data", featureVectorDefinition, 0);
+        Instances dataSet = new Instances(RELATION, featureVectorDefinition, 1);
         dataSet.add(instance);
         dataSet.setClassIndex(0);
 
@@ -193,13 +195,13 @@ public class EmotionClassifier {
         Instance instance = extractFeatures(audioFile);
         try {
             assert instance != null;
-            int emotion = (int) Math.round(this.classifier.classifyInstance(instance));
+            double result = this.classifier.classifyInstance(instance);
             return new String[]{
                     "happy_amazed",
                     "sad_lonely",
                     "angry",
                     "calm_relaxing"
-            }[emotion];
+            }[(int) Math.round(result)];
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package de.ur.assistenz.emomusic.player;
 import de.hijacksoft.oosql.DerbyAdapter;
 import de.ur.assistenz.emomusic.DatabaseAdapterProvider;
 import de.ur.assistenz.emomusic.SettingsManager;
+import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
 import de.ur.assistenz.emomusic.player.Observer.EventReceiver;
 import de.ur.assistenz.emomusic.player.Observer.EventSender;
 import de.ur.assistenz.emomusic.player.Observer.SongEvent;
@@ -14,6 +15,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MusicLibraryModel {
@@ -30,7 +32,7 @@ public class MusicLibraryModel {
     private DerbyAdapter derby;
     private SettingsManager settings = SettingsManager.getInstance();
     private EventSender<SongEvent> eventSender = new EventSender<>();
-    // private EmotionClassifier classifier = new EmotionClassifier();
+    private EmotionClassifier classifier = new EmotionClassifier();
 
     private MusicLibraryModel(){
         this.derby = DatabaseAdapterProvider.getInstance().getAdapter();
@@ -87,6 +89,7 @@ public class MusicLibraryModel {
 
     public List<Song> fetchSongs() {
         List<Song> songs =  derby.select(Song.class);
+        if(songs == null) return new ArrayList<>();
         return songs;
     }
 
@@ -94,11 +97,11 @@ public class MusicLibraryModel {
         Song song = new Song();
         song.setName(file.getName());
         song.setUrl(file.getAbsolutePath());
-        // song.setEmotion(classifier.classify(file));
+        song.setEmotion(classifier.classify(file));
         Tag tag = readSongMeta(file);
         if(tag != null) {
             String name = tag.getFirst(FieldKey.TITLE);
-            song.setName(name == null ? song.getName() : name);
+            song.setName(name == null || name.equals("") ? song.getName() : name);
             song.setArtist(tag.getFirst(FieldKey.ARTIST));
             song.setAlbum(tag.getFirst(FieldKey.ALBUM));
             song.setYear(tag.getFirst(FieldKey.YEAR));

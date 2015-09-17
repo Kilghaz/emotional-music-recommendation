@@ -26,7 +26,7 @@ public class Song {
     @SQLColumn("album")
     private String album;
 
-    @SQLColumn("year")
+    @SQLColumn("release_year")
     private String year;
 
     @SQLColumn("emotion")
