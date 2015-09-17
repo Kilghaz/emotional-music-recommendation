@@ -80,19 +80,38 @@ public class EmotionClassifier {
         }
     }
 
-    private Instance extractFeatures(File audioFile) {
+    public Instance extractFeatures(File audioFile) {
         // TODO: implement feature extraction
         XuggleAudio audio = new XuggleAudio(audioFile);
 
+        double[] mfcc = calculateOverallAverageMFCC(audio);
+
+        return null;
+    }
+
+    private double[] calculateOverallAverageMFCC(XuggleAudio audio) {
         MFCC mfcc = new MFCC(audio);
 
         SampleChunk sc = null;
-        List<double[][]> mfccs = new ArrayList<>();
+
+        double[] overallAverageMFCC = new double[13];   // MFCC always has 13 values
+        int length = 0;
+
         while ((sc = mfcc.nextSampleChunk()) != null) {
-            mfccs.add(mfcc.getLastCalculatedFeature());
+            for(double[] mfccValues : mfcc.getLastCalculatedFeature()) {
+                for(int i = 0; i < mfccValues.length; i++) {
+                    overallAverageMFCC[i] += mfccValues[i];
+                }
+                length++;
+            }
         }
 
-        return null;
+        for(int i = 0; i < overallAverageMFCC.length; i++) {
+            overallAverageMFCC[i] /= length;
+            System.out.println(overallAverageMFCC[i]);
+        }
+
+        return overallAverageMFCC;
     }
 
     public String classify(File audioFile) {
