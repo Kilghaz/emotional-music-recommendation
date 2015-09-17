@@ -1,6 +1,7 @@
 package de.ur.assistenz.emomusic.classifier;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class TrainingDataLoader {
     private List<HashMap<String, String>> instances;
 
     public void read(String path) throws IOException {
-        this.trainingDataRaw = Files.readAllLines(Paths.get(path));
+        this.trainingDataRaw = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
         this.headers = readHeader();
         this.instances = readValues();
     }

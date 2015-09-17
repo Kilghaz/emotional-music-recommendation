@@ -10,6 +10,7 @@ import weka.core.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class EmotionClassifier {
 
     private static EmotionClassifier instance = null;
     private FastVector featureVectorDefinition;
+
+    private double kappaThreshold = 0.5;
 
     public EmotionClassifier() {
         instance = this;
@@ -39,6 +42,7 @@ public class EmotionClassifier {
 
         FastVector definitionVector = new FastVector(14);
         definitionVector.addElement(new Attribute("emotion", emotionValues));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_0"));
         definitionVector.addElement(new Attribute("mfcc_overall_average_1"));
         definitionVector.addElement(new Attribute("mfcc_overall_average_2"));
         definitionVector.addElement(new Attribute("mfcc_overall_average_3"));
@@ -51,8 +55,9 @@ public class EmotionClassifier {
         definitionVector.addElement(new Attribute("mfcc_overall_average_10"));
         definitionVector.addElement(new Attribute("mfcc_overall_average_11"));
         definitionVector.addElement(new Attribute("mfcc_overall_average_12"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_13"));
-        definitionVector.addElement(new Attribute("spectral_flux_overall_average_0"));
+
+        // Spectral flux is not in the training data so we cannot use it for now.
+        // definitionVector.addElement(new Attribute("spectral_flux_overall_average_0"));
 
         return definitionVector;
     }
@@ -70,11 +75,15 @@ public class EmotionClassifier {
         trainingSet.setClassIndex(0);
 
         for(HashMap<String, String> songFeatures : values) {
+            double kappa = getDoubleValue("fleiss_kappa_annotation", songFeatures);
+            if(kappa < this.kappaThreshold) {
+                continue;
+            }
             Instance featureVector = new SparseInstance(featureVectorDefinition.capacity());
-            featureVector.setValue((Attribute) featureVectorDefinition.elementAt(0), songFeatures.get("emotion"));
+            featureVector.setValue((Attribute) featureVectorDefinition.elementAt(0), selectAnnotation(songFeatures));
             for(int i = 1; i < featureVectorDefinition.capacity(); i++) {
                 Attribute attr = (Attribute) featureVectorDefinition.elementAt(i);
-                featureVector.setValue(attr, Double.parseDouble(songFeatures.get(attr.name())));
+                featureVector.setValue(attr, getDoubleValue(attr.name(), songFeatures));
             }
             trainingSet.add(featureVector);
         }
@@ -87,11 +96,40 @@ public class EmotionClassifier {
         }
     }
 
+    private Double getDoubleValue(String key, HashMap<String, String> songFeatures) {
+        return Double.parseDouble(songFeatures.get("fleiss_kappa_annotation").replace(",", "."));
+    }
+
+    private String selectAnnotation(HashMap<String, String> instance) {
+        List<String> annotations = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            annotations.add(instance.get("annotation_" + i));
+        }
+        String annotation = null;
+        int maxCount = 0;
+        for(String a : annotations) {
+            int count = count(a, annotations);
+            if(count > maxCount) {
+                annotation = a;
+            }
+        }
+        return annotation;
+    }
+
+    private int count(String needle, List<String> haystack) {
+        int count = 0;
+        for(String value : haystack) {
+            if(value.equals(needle)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private Instance extractFeatures(File audioFile) {
         XuggleAudio audio = new XuggleAudio(audioFile);
 
         double[] mfcc = calculateOverallAverageMFCC(audio);
-        double spectralFlux = calculateOverallAverageSpectralFlux(audio);
 
         Instance instance = new SparseInstance(15);
 
@@ -100,9 +138,12 @@ public class EmotionClassifier {
         for(int i = 0; i < mfcc.length; i++) {
             instance.setValue((Attribute)featureVectorDefinition.elementAt(i + mfccOffset), mfcc[i]);
         }
-        instance.setValue((Attribute)featureVectorDefinition.elementAt(14), spectralFlux);
 
-        return instance;
+        Instances dataSet = new Instances("unlabled_data", featureVectorDefinition, 0);
+        dataSet.add(instance);
+        dataSet.setClassIndex(0);
+
+        return dataSet.firstInstance();
     }
 
     private double calculateOverallAverageSpectralFlux(XuggleAudio audio) {
@@ -143,7 +184,6 @@ public class EmotionClassifier {
 
         for(int i = 0; i < overallAverageMFCC.length; i++) {
             overallAverageMFCC[i] /= length;
-            System.out.println(overallAverageMFCC[i]);
         }
 
         return overallAverageMFCC;
@@ -164,6 +204,14 @@ public class EmotionClassifier {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public double getKappaThreshold() {
+        return kappaThreshold;
+    }
+
+    public void setKappaThreshold(double kappaThreshold) {
+        this.kappaThreshold = kappaThreshold;
     }
 
 }

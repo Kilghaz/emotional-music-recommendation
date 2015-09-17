@@ -8,7 +8,7 @@ public class Test {
 
     public static void main(String[] args) {
         EmotionClassifier classifier = new EmotionClassifier();
-        classifier.extractFeatures(new File("GP_P09.mp3"));
+        System.out.println(classifier.classify(new File("GP_P09.mp3")));
     }
 
 }
