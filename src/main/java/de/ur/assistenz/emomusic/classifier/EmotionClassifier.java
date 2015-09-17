@@ -39,20 +39,20 @@ public class EmotionClassifier {
 
         FastVector definitionVector = new FastVector(14);
         definitionVector.addElement(new Attribute("emotion", emotionValues));
-        definitionVector.addElement(new Attribute("mfcc_1"));
-        definitionVector.addElement(new Attribute("mfcc_2"));
-        definitionVector.addElement(new Attribute("mfcc_3"));
-        definitionVector.addElement(new Attribute("mfcc_4"));
-        definitionVector.addElement(new Attribute("mfcc_5"));
-        definitionVector.addElement(new Attribute("mfcc_6"));
-        definitionVector.addElement(new Attribute("mfcc_7"));
-        definitionVector.addElement(new Attribute("mfcc_8"));
-        definitionVector.addElement(new Attribute("mfcc_9"));
-        definitionVector.addElement(new Attribute("mfcc_10"));
-        definitionVector.addElement(new Attribute("mfcc_11"));
-        definitionVector.addElement(new Attribute("mfcc_12"));
-        definitionVector.addElement(new Attribute("mfcc_13"));
-        definitionVector.addElement(new Attribute("spectral_flux"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_1"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_2"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_3"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_4"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_5"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_6"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_7"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_8"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_9"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_10"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_11"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_12"));
+        definitionVector.addElement(new Attribute("mfcc_overall_average_13"));
+        definitionVector.addElement(new Attribute("spectral_flux_overall_average_0"));
 
         return definitionVector;
     }
