@@ -3,6 +3,7 @@ package de.ur.assistenz.emomusic.classifier;
 import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
 import jAudioFeatureExtractor.jAudioTools.FeatureProcessor;
+import org.apache.commons.io.output.NullOutputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -24,11 +25,11 @@ public class SimpleFeatureProcessor extends FeatureProcessor {
                 samplingRate,
                 false,
                 new FeatureExtractor[] {extractor},
-                new boolean[]{},
-                false,
+                new boolean[]{true},
                 true,
-                null,
-                null,
+                false,
+                new NullOutputStream(),
+                new NullOutputStream(),
                 0,
                 null,
                 null);

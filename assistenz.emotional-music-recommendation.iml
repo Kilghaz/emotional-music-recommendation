@@ -153,5 +153,10 @@
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-stable:3.6.12" level="project" />
     <orderEntry type="library" name="Maven: net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a" level="project" />
     <orderEntry type="library" name="Maven: org:jaudiotagger:2.0.3" level="project" />
+    <orderEntry type="library" name="Maven: javax.media:jmf:2.1.1e" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.soundlibs:mp3spi:1.9.5-1" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.soundlibs:jlayer:1.0.1-1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:3.8.2" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.soundlibs:tritonus-share:0.3.7-2" level="project" />
   </component>
 </module>

@@ -155,8 +155,8 @@ public class EmotionClassifier {
     }
 
     private double[] calculatePowerSpectrum(File audioFile) throws Exception {
-        double[][][] featureValues = extractFeature(new PowerSpectrum(), audioFile);
-        return null;
+        double[][] featureValues = extractFeature(new PowerSpectrum(), audioFile);
+        return featureValues[0];
     }
 
     private double calculateOverallAverageSpectralFlux(XuggleAudio audio) {
@@ -228,10 +228,10 @@ public class EmotionClassifier {
         train();
     }
 
-    private double[][][] extractFeature(FeatureExtractor extractor, File audioFile) {
+    public double[][] extractFeature(FeatureExtractor extractor, File audioFile) {
         try {
             SimpleFeatureProcessor processor = new SimpleFeatureProcessor(this.windowSize, this.windowOverlap, this.samplingRate, extractor);
-            return processor.process(audioFile);
+            return processor.process(audioFile)[0];
         } catch (Exception e) {
             e.printStackTrace();
         }
