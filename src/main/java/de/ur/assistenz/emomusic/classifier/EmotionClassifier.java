@@ -1,5 +1,7 @@
 package de.ur.assistenz.emomusic.classifier;
 
+import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
+import jAudioFeatureExtractor.AudioFeatures.PowerSpectrum;
 import org.openimaj.audio.SampleChunk;
 import org.openimaj.audio.features.MFCC;
 import org.openimaj.audio.features.SpectralFlux;
@@ -17,6 +19,11 @@ import java.util.List;
 public class EmotionClassifier {
 
     private static final String RELATION = "music_emotion";
+
+    private int windowSize = 512;   // samples
+    private double windowOverlap = 0.0;
+    private double samplingRate = 16.0;
+
     private static EmotionClassifier instance = null;
 
     private Classifier classifier;
@@ -130,7 +137,6 @@ public class EmotionClassifier {
 
     private Instance extractFeatures(File audioFile) {
         XuggleAudio audio = new XuggleAudio(audioFile);
-
         double[] mfcc = calculateOverallAverageMFCC(audio);
 
         Instance instance = new SparseInstance(15);
@@ -146,6 +152,11 @@ public class EmotionClassifier {
         dataSet.setClassIndex(0);
 
         return dataSet.firstInstance();
+    }
+
+    private double[] calculatePowerSpectrum(File audioFile) throws Exception {
+        double[][][] featureValues = extractFeature(new PowerSpectrum(), audioFile);
+        return null;
     }
 
     private double calculateOverallAverageSpectralFlux(XuggleAudio audio) {
@@ -217,4 +228,37 @@ public class EmotionClassifier {
         train();
     }
 
+    private double[][][] extractFeature(FeatureExtractor extractor, File audioFile) {
+        try {
+            SimpleFeatureProcessor processor = new SimpleFeatureProcessor(this.windowSize, this.windowOverlap, this.samplingRate, extractor);
+            return processor.process(audioFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int getWindowSize() {
+        return windowSize;
+    }
+
+    public void setWindowSize(int windowSize) {
+        this.windowSize = windowSize;
+    }
+
+    public double getWindowOverlap() {
+        return windowOverlap;
+    }
+
+    public void setWindowOverlap(double windowOverlap) {
+        this.windowOverlap = windowOverlap;
+    }
+
+    public double getSamplingRate() {
+        return samplingRate;
+    }
+
+    public void setSamplingRate(double samplingRate) {
+        this.samplingRate = samplingRate;
+    }
 }
