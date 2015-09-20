@@ -2,8 +2,6 @@ package de.ur.assistenz.emomusic.classifier;
 
 import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
-import jAudioFeatureExtractor.jAudioTools.FeatureProcessor;
-import org.apache.commons.io.output.NullOutputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -11,7 +9,7 @@ import javax.sound.sampled.AudioSystem;
 import java.io.File;
 import java.util.LinkedList;
 
-public class SimpleFeatureProcessor extends FeatureProcessor {
+public class SimpleFeatureProcessor {
 
     private boolean normalise = false;
     private double samplingRate = 0.0;
@@ -19,20 +17,7 @@ public class SimpleFeatureProcessor extends FeatureProcessor {
     private double windowOverlap = 0.0;
     private FeatureExtractor extractor;
 
-    public SimpleFeatureProcessor(int windowSize, double windowOverlap, double samplingRate, FeatureExtractor extractor) throws Exception {
-        super(windowSize,
-                windowOverlap,
-                samplingRate,
-                false,
-                new FeatureExtractor[] {extractor},
-                new boolean[]{true},
-                true,
-                false,
-                new NullOutputStream(),
-                new NullOutputStream(),
-                0,
-                null,
-                null);
+    public SimpleFeatureProcessor(int windowSize, double windowOverlap, double samplingRate, FeatureExtractor extractor) {
         this.normalise = false;
         this.samplingRate = samplingRate;
         this.windowSize = windowSize;
@@ -132,9 +117,7 @@ public class SimpleFeatureProcessor extends FeatureProcessor {
             int windowStartIndex = windowStartIndices[win];
             int endSample = windowStartIndex + this.windowSize - 1;
             if(endSample < samples.length) {
-                for(int i = windowStartIndex; i <= endSample; ++i) {
-                    window[i - windowStartIndex] = samples[i];
-                }
+                System.arraycopy(samples, windowStartIndex, window, 0, endSample + 1 - windowStartIndex);
             } else {
                 for(int i = windowStartIndex; i <= endSample; ++i) {
                     if(i < samples.length) {
