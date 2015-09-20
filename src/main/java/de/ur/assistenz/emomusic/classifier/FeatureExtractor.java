@@ -1,6 +1,5 @@
 package de.ur.assistenz.emomusic.classifier;
 
-import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
 
 import javax.sound.sampled.AudioFormat;
@@ -9,15 +8,15 @@ import javax.sound.sampled.AudioSystem;
 import java.io.File;
 import java.util.LinkedList;
 
-public class SimpleFeatureProcessor {
+public class FeatureExtractor {
 
     private boolean normalise = false;
     private double samplingRate = 0.0;
     private int windowSize = 0;
     private double windowOverlap = 0.0;
-    private FeatureExtractor extractor;
+    private jAudioFeatureExtractor.AudioFeatures.FeatureExtractor extractor;
 
-    public SimpleFeatureProcessor(int windowSize, double windowOverlap, double samplingRate, FeatureExtractor extractor) {
+    public FeatureExtractor(int windowSize, double windowOverlap, double samplingRate, jAudioFeatureExtractor.AudioFeatures.FeatureExtractor extractor) {
         this.normalise = false;
         this.samplingRate = samplingRate;
         this.windowSize = windowSize;
@@ -40,31 +39,31 @@ public class SimpleFeatureProcessor {
     }
 
     private double[] extractSamples(File file) throws Exception {
-        AudioInputStream original_stream = AudioSystem.getAudioInputStream(file);
-        AudioFormat original_format = original_stream.getFormat();
-        int bit_depth = original_format.getSampleSizeInBits();
-        if(bit_depth != 8 && bit_depth != 16) {
-            bit_depth = 16;
+        AudioInputStream originalStream = AudioSystem.getAudioInputStream(file);
+        AudioFormat format = originalStream.getFormat();
+        int bitDepth = format.getSampleSizeInBits();
+        if(bitDepth != 8 && bitDepth != 16) {
+            bitDepth = 16;
         }
 
-        AudioInputStream second_stream = original_stream;
-        if(original_format.getEncoding() != AudioFormat.Encoding.PCM_SIGNED || !original_format.isBigEndian()) {
-            AudioFormat new_stream = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, original_format.getSampleRate(), bit_depth, original_format.getChannels(), original_format.getChannels() * (bit_depth / 8), original_format.getSampleRate(), true);
-            second_stream = AudioSystem.getAudioInputStream(new_stream, original_stream);
+        AudioInputStream secondStream = originalStream;
+        if(format.getEncoding() != AudioFormat.Encoding.PCM_SIGNED || !format.isBigEndian()) {
+            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), bitDepth, format.getChannels(), format.getChannels() * (bitDepth / 8), format.getSampleRate(), true);
+            secondStream = AudioSystem.getAudioInputStream(audioFormat, originalStream);
         }
 
-        AudioInputStream new_stream1 = second_stream;
-        if(original_format.getSampleRate() != (float)this.samplingRate || bit_depth != original_format.getSampleSizeInBits()) {
-            AudioFormat audio_data = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, (float)this.samplingRate, bit_depth, original_format.getChannels(), original_format.getChannels() * (bit_depth / 8), original_format.getSampleRate(), true);
-            new_stream1 = AudioSystem.getAudioInputStream(audio_data, second_stream);
+        AudioInputStream newStream = secondStream;
+        if(format.getSampleRate() != (float)this.samplingRate || bitDepth != format.getSampleSizeInBits()) {
+            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, (float)this.samplingRate, bitDepth, format.getChannels(), format.getChannels() * (bitDepth / 8), format.getSampleRate(), true);
+            newStream = AudioSystem.getAudioInputStream(audioFormat, secondStream);
         }
 
-        AudioSamples audio_data1 = new AudioSamples(new_stream1, file.getPath(), false);
+        AudioSamples audioSamples = new AudioSamples(newStream, file.getPath(), false);
         if(this.normalise) {
-            audio_data1.normalizeMixedDownSamples();
+            audioSamples.normalizeMixedDownSamples();
         }
 
-        return audio_data1.getSamplesMixedDown();
+        return audioSamples.getSamplesMixedDown();
     }
 
     private int[] createFeatureExtractorDependencies() {
@@ -108,7 +107,7 @@ public class SimpleFeatureProcessor {
         return maxFeatureOffsets;
     }
 
-    private double[][][] getFeatures(double[] samples, int[] windowStartIndices) throws Exception {
+    private double[][][] extractFeature(double[] samples, int[] windowStartIndices) throws Exception {
         double[][][] results = new double[windowStartIndices.length][1][];
 
         for(int win = 0; win < windowStartIndices.length; ++win) {
@@ -134,7 +133,7 @@ public class SimpleFeatureProcessor {
             if(win < maxFeatureOffsets[0]) {
                 results[win][0] = null;
             } else {
-                FeatureExtractor feature = this.extractor;
+                jAudioFeatureExtractor.AudioFeatures.FeatureExtractor feature = this.extractor;
                 double[][] otherFeatureValues = null;
                 if(featureExtractorDependencies != null) {
                     otherFeatureValues = new double[featureExtractorDependencies.length][];
@@ -153,11 +152,11 @@ public class SimpleFeatureProcessor {
         return results;
     }
 
-    public double[][][] process(File file) {
+    public double[][] extract(File file) {
         try {
             double[] samples = extractSamples(file);
             int[] windowStartIndices = calculateWindowStartIndices(samples);
-            return getFeatures(samples, windowStartIndices);
+            return extractFeature(samples, windowStartIndices)[0];
         } catch (Exception e) {
             e.printStackTrace();
         }

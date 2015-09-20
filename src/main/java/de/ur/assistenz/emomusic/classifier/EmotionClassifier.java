@@ -1,6 +1,5 @@
 package de.ur.assistenz.emomusic.classifier;
 
-import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
 import jAudioFeatureExtractor.AudioFeatures.PowerSpectrum;
 import org.openimaj.audio.SampleChunk;
 import org.openimaj.audio.features.MFCC;
@@ -228,10 +227,10 @@ public class EmotionClassifier {
         train();
     }
 
-    public double[][] extractFeature(FeatureExtractor extractor, File audioFile) {
+    public double[][] extractFeature(jAudioFeatureExtractor.AudioFeatures.FeatureExtractor feature, File audioFile) {
         try {
-            SimpleFeatureProcessor processor = new SimpleFeatureProcessor(this.windowSize, this.windowOverlap, this.samplingRate, extractor);
-            return processor.process(audioFile)[0];
+            FeatureExtractor extractor = new FeatureExtractor(this.windowSize, this.windowOverlap, this.samplingRate, feature);
+            return extractor.extract(audioFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
