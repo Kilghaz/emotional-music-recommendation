@@ -1,12 +1,14 @@
 package de.ur.assistenz.emomusic.classifier;
 
 import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
+import jAudioFeatureExtractor.AudioFeatures.MagnitudeSpectrum;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class FeatureExtractorFacade {
@@ -16,6 +18,14 @@ public class FeatureExtractorFacade {
     private int windowSize = 0;
     private double windowOverlap = 0.0;
     private FeatureExtractor extractor;
+
+    private static final HashMap<String, FeatureExtractor> EXTRACTORS;
+
+    static {
+        EXTRACTORS = new HashMap<>();
+        EXTRACTORS.put("Magnitude Spectrum", new MagnitudeSpectrum());
+        EXTRACTORS.put("Power Spectrum", new MagnitudeSpectrum());
+    }
 
     public FeatureExtractorFacade(int windowSize, double windowOverlap, double samplingRate, FeatureExtractor extractor) {
         this.normalise = false;
@@ -67,87 +77,66 @@ public class FeatureExtractorFacade {
         return audioSamples.getSamplesMixedDown();
     }
 
-    private int[] createFeatureExtractorDependencies() {
-        String[] dependencyNames = new String[1];
-
-        dependencyNames[0] = extractor.getFeatureDefinition().name;
-
-        String[] dependencies = this.extractor.getDepenedencies();
-        if(dependencies != null) {
-            int[] featureExtractorDependencies = new int[dependencies.length];
-
-            for(int theseOffsets = 0; theseOffsets < dependencies.length; ++theseOffsets) {
-                for(int i = 0; i < dependencyNames.length; ++i) {
-                    if(dependencies[theseOffsets].equals(dependencyNames[i])) {
-                        featureExtractorDependencies[theseOffsets] = i;
-                    }
-                }
-            }
-            return featureExtractorDependencies;
+    private HashMap<String, double[][]> calculateDependencies(File file) {
+        if(this.extractor.getDepenedencies() == null) {
+            return null;
         }
-        return null;
+        HashMap<String, double[][]> depenencies = new HashMap<>();
+        for(String dependencyName : this.extractor.getDepenedencies()){
+            FeatureExtractorFacade dependetFeature = createDependencyExtractorFacade(dependencyName);
+            depenencies.put(dependencyName, dependetFeature.extract(file));
+        }
+        return depenencies;
     }
 
-    private int[] calculateMaxFeatureOffsets(int[] featureExtractorDependencies) {
-        int[] maxFeatureOffsets = new int[1];
+    private FeatureExtractorFacade createDependencyExtractorFacade(String dependencyName) {
+        return new FeatureExtractorFacade(this.windowSize, this.windowOverlap, this.samplingRate, EXTRACTORS.get(dependencyName));
+    }
 
-        if(this.extractor.getDepenedencyOffsets() == null) {
-            maxFeatureOffsets[0] = 0;
+    private double[] calculateSampleWindow(double[] samples, int[] windowStartIndices, int windowIndex) {
+        double[] sampleWindow = new double[this.windowSize];
+        int windowStartIndex = windowStartIndices[windowIndex];
+        int endSample = windowStartIndex + this.windowSize - 1;
+        if(endSample < samples.length) {
+            System.arraycopy(samples, windowStartIndex, sampleWindow, 0, endSample + 1 - windowStartIndex);
         } else {
-            int[] depenedencyOffsets = this.extractor.getDepenedencyOffsets();
-
-            maxFeatureOffsets[0] = Math.abs(depenedencyOffsets[0] + maxFeatureOffsets[featureExtractorDependencies[0]]);
-
-            for(int i = 0; i < depenedencyOffsets.length; ++i) {
-                int val = Math.abs(depenedencyOffsets[i]) + maxFeatureOffsets[featureExtractorDependencies[i]];
-                if(val > maxFeatureOffsets[0]) {
-                    maxFeatureOffsets[0] = val;
+            for(int i = windowStartIndex; i <= endSample; ++i) {
+                if(i < samples.length) {
+                    sampleWindow[i - windowStartIndex] = samples[i];
+                } else {
+                    sampleWindow[i - windowStartIndex] = 0.0D;
                 }
             }
         }
-        return maxFeatureOffsets;
+        return sampleWindow;
     }
 
-    private double[][][] extractFeature(double[] samples, int[] windowStartIndices) throws Exception {
-        double[][][] results = new double[windowStartIndices.length][1][];
+    private double[][] createOtherFeatureValues(HashMap<String, double[][]> dependencies, int windowIndex) {
+        if(dependencies == null) {
+            return null;
+        }
+        String[] featureExtractorDependencies = extractor.getDepenedencies();
+        double[][] otherFeatureValues = new double[featureExtractorDependencies.length][];
+        int i = 0;
+        for(String dependencyName : this.extractor.getDepenedencies()) {
+            int offset = this.extractor.getDepenedencyOffsets()[i];
+            otherFeatureValues[i] = dependencies.get(dependencyName)[windowIndex + offset];
+            i++;
+        }
+        return otherFeatureValues;
+    }
 
-        for(int win = 0; win < windowStartIndices.length; ++win) {
+    private double[][] extractFeature(File file) throws Exception {
+        HashMap<String, double[][]> depdencies = calculateDependencies(file);
 
-            double[] window = new double[this.windowSize];
-            int windowStartIndex = windowStartIndices[win];
-            int endSample = windowStartIndex + this.windowSize - 1;
-            if(endSample < samples.length) {
-                System.arraycopy(samples, windowStartIndex, window, 0, endSample + 1 - windowStartIndex);
-            } else {
-                for(int i = windowStartIndex; i <= endSample; ++i) {
-                    if(i < samples.length) {
-                        window[i - windowStartIndex] = samples[i];
-                    } else {
-                        window[i - windowStartIndex] = 0.0D;
-                    }
-                }
-            }
+        double[] samples = extractSamples(file);
+        int[] windowStartIndices = calculateWindowStartIndices(samples);
+        double[][] results = new double[windowStartIndices.length][];
 
-            int[] featureExtractorDependencies = createFeatureExtractorDependencies();
-            int[] maxFeatureOffsets = calculateMaxFeatureOffsets(featureExtractorDependencies);
-
-            if(win < maxFeatureOffsets[0]) {
-                results[win][0] = null;
-            } else {
-                FeatureExtractor feature = this.extractor;
-                double[][] otherFeatureValues = null;
-                if(featureExtractorDependencies != null) {
-                    otherFeatureValues = new double[featureExtractorDependencies.length][];
-
-                    for(int i = 0; i < featureExtractorDependencies.length; ++i) {
-                        int dependency = featureExtractorDependencies[i];
-                        int offset = feature.getDepenedencyOffsets()[i];
-                        otherFeatureValues[i] = results[win + offset][dependency];
-                    }
-                }
-
-                results[win][0] = feature.extractFeature(window, this.samplingRate, otherFeatureValues);
-            }
+        for(int windowIndex = 0; windowIndex < windowStartIndices.length; ++windowIndex) {
+            double[] sampleWindow = calculateSampleWindow(samples, windowStartIndices, windowIndex);
+            double[][] otherFeatureValues = createOtherFeatureValues(depdencies, windowIndex);
+            results[windowIndex] = this.extractor.extractFeature(sampleWindow, this.samplingRate, otherFeatureValues);
         }
 
         return results;
@@ -155,9 +144,7 @@ public class FeatureExtractorFacade {
 
     public double[][] extract(File file) {
         try {
-            double[] samples = extractSamples(file);
-            int[] windowStartIndices = calculateWindowStartIndices(samples);
-            return extractFeature(samples, windowStartIndices)[0];
+            return extractFeature(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
