@@ -229,7 +229,7 @@ public class EmotionClassifier {
 
     public double[][] extractFeature(jAudioFeatureExtractor.AudioFeatures.FeatureExtractor feature, File audioFile) {
         try {
-            FeatureExtractor extractor = new FeatureExtractor(this.windowSize, this.windowOverlap, this.samplingRate, feature);
+            FeatureExtractorFacade extractor = new FeatureExtractorFacade(this.windowSize, this.windowOverlap, this.samplingRate, feature);
             return extractor.extract(audioFile);
         } catch (Exception e) {
             e.printStackTrace();

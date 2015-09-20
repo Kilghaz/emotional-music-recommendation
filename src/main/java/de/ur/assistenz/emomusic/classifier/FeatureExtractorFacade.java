@@ -1,5 +1,6 @@
 package de.ur.assistenz.emomusic.classifier;
 
+import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
 
 import javax.sound.sampled.AudioFormat;
@@ -8,15 +9,15 @@ import javax.sound.sampled.AudioSystem;
 import java.io.File;
 import java.util.LinkedList;
 
-public class FeatureExtractor {
+public class FeatureExtractorFacade {
 
     private boolean normalise = false;
     private double samplingRate = 0.0;
     private int windowSize = 0;
     private double windowOverlap = 0.0;
-    private jAudioFeatureExtractor.AudioFeatures.FeatureExtractor extractor;
+    private FeatureExtractor extractor;
 
-    public FeatureExtractor(int windowSize, double windowOverlap, double samplingRate, jAudioFeatureExtractor.AudioFeatures.FeatureExtractor extractor) {
+    public FeatureExtractorFacade(int windowSize, double windowOverlap, double samplingRate, FeatureExtractor extractor) {
         this.normalise = false;
         this.samplingRate = samplingRate;
         this.windowSize = windowSize;
@@ -133,7 +134,7 @@ public class FeatureExtractor {
             if(win < maxFeatureOffsets[0]) {
                 results[win][0] = null;
             } else {
-                jAudioFeatureExtractor.AudioFeatures.FeatureExtractor feature = this.extractor;
+                FeatureExtractor feature = this.extractor;
                 double[][] otherFeatureValues = null;
                 if(featureExtractorDependencies != null) {
                     otherFeatureValues = new double[featureExtractorDependencies.length][];
