@@ -1,14 +1,10 @@
 package de.ur.assistenz.emomusic.classifier;
 
-import jAudioFeatureExtractor.AudioFeatures.PowerSpectrum;
-import org.openimaj.audio.SampleChunk;
-import org.openimaj.audio.features.MFCC;
-import org.openimaj.audio.features.SpectralFlux;
-import org.openimaj.video.xuggle.XuggleAudio;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.core.*;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -135,10 +131,17 @@ public class EmotionClassifier {
     }
 
     private Instance extractFeatures(File audioFile) {
-        XuggleAudio audio = new XuggleAudio(audioFile);
-        double[] mfcc = calculateOverallAverageMFCC(audio);
-
+        FeatureExtractor featureExtractor = new FeatureExtractor(this.windowSize, (int) this.windowOverlap);
         Instance instance = new SparseInstance(15);
+
+        try {
+            featureExtractor.extract(audioFile);
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+            return instance;
+        }
+
+        float[] mfcc = featureExtractor.getOverallAverageMFCC();
 
         int mfccOffset = 1;
 
@@ -151,54 +154,6 @@ public class EmotionClassifier {
         dataSet.setClassIndex(0);
 
         return dataSet.firstInstance();
-    }
-
-    private double[] calculatePowerSpectrum(File audioFile) throws Exception {
-        double[][] featureValues = extractFeature(new PowerSpectrum(), audioFile);
-        return featureValues[0];
-    }
-
-    private double calculateOverallAverageSpectralFlux(XuggleAudio audio) {
-        SpectralFlux spectralFlux = new SpectralFlux(audio);
-
-        SampleChunk sc = null;
-
-        double overallAverageSpectralFlux = 0;  // spectral flux has only 1 value
-        int length = 0;
-
-        while ((sc = spectralFlux.nextSampleChunk()) != null) {
-            double[][] values = spectralFlux.getLastCalculatedFeature();
-            for(double[] fluxValue : values) {
-                overallAverageSpectralFlux += fluxValue[0];  // spectral flux has only 1 value
-                length++;
-            }
-        }
-
-        return overallAverageSpectralFlux / length;
-    }
-
-    private double[] calculateOverallAverageMFCC(XuggleAudio audio) {
-        MFCC mfcc = new MFCC(audio);
-
-        SampleChunk sc = null;
-
-        double[] overallAverageMFCC = new double[13];   // MFCC always has 13 values
-        int length = 0;
-
-        while ((sc = mfcc.nextSampleChunk()) != null) {
-            for(double[] mfccValues : mfcc.getLastCalculatedFeature()) {
-                for(int i = 0; i < mfccValues.length; i++) {
-                    overallAverageMFCC[i] += mfccValues[i];
-                }
-                length++;
-            }
-        }
-
-        for(int i = 0; i < overallAverageMFCC.length; i++) {
-            overallAverageMFCC[i] /= length;
-        }
-
-        return overallAverageMFCC;
     }
 
     public String classify(File audioFile) {
@@ -225,16 +180,6 @@ public class EmotionClassifier {
     public void setKappaThreshold(double kappaThreshold) {
         this.kappaThreshold = kappaThreshold;
         train();
-    }
-
-    public double[][] extractFeature(jAudioFeatureExtractor.AudioFeatures.FeatureExtractor feature, File audioFile) {
-        try {
-            FeatureExtractorFacade extractor = new FeatureExtractorFacade(this.windowSize, this.windowOverlap, this.samplingRate, feature);
-            return extractor.extract(audioFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public int getWindowSize() {
