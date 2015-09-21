@@ -1,18 +1,24 @@
 .button, .button:hover { -fx-background-color: #1A454D; -fx-text-fill: #EBEBEB; -fx-border-width: 0; -fx-font-weight: bold; }
 
-.button:hover { -fx-background-color: #205660; -fx-border-color: #205660; -fx-border-width: 0; }
+.button:hover { -fx-background-color: #215660; -fx-border-color: #215660; -fx-border-width: 0; }
 
-.btn-play:hover, .btn-pause:hover { -fx-background-color: transparent; }
+.btn-play:hover, .btn-pause:hover, btn-back:hover, btn-next:hover { -fx-background-color: transparent; }
 
 .btn-play { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; }
 
 .btn-pause { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; -fx-background-position: -80px; }
 
+.btn-filter { -fx-background-color: #121A1C; -fx-background-size: 160px; }
+
+.btn-next { -fx-background-color: transparent; -fx-background-image: url("images/btn-next.png"); -fx-background-size: 160px; }
+
+.btn-back { -fx-background-color: transparent; -fx-background-image: url("images/btn-back.png"); -fx-background-size: 160px; }
+
 .table-view, .playlist { -fx-background-color: #16272B; }
 
 .song, .column { -fx-background-color: #121A1C; -fx-text-fill: #EBEBEB; -fx-border-width: 1px; -fx-border-color: #16272B transparent transparent transparent; }
 
-.song:hover, .column { -fx-background-color: #162023; }
+.song:hover, .column { -fx-background-color: #172123; }
 
 .playlist .column-header .label { -fx-text-fill: #EBEBEB; -fx-font-weight: bold; }
 
@@ -22,7 +28,7 @@
 
 .toolbar { -fx-background-color: #16272B; -fx-padding: 5px; }
 
-.controls { -fx-padding: 5px; -fx-background-color: #1b3035; }
+.controls { -fx-padding: 5px; -fx-background-color: #1c3136; }
 
 .slider { -fx-padding: 25px 10px 25px 10px; }
 .slider .thumb { -fx-background-color: #FF4E50; -fx-border-radius: 0px; }

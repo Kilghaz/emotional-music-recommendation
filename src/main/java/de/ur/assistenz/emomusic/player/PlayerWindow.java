@@ -15,6 +15,7 @@ public class PlayerWindow {
 
     private PlaylistView playlistView = new PlaylistView();
     private PlayerControlsView playerControlsView = new PlayerControlsView();
+    private PlaylistSelectionView playlistSelectionView = new PlaylistSelectionView();
     private AudioPlayer audioPlayer = new AudioPlayer();
     private ToolbarView toolbar = new ToolbarView(stage);
 
@@ -40,6 +41,8 @@ public class PlayerWindow {
         layout.setTop(toolbar);
         layout.setCenter(playlistView);
         layout.setBottom(playerControlsView);
+        layout.setRight(playlistSelectionView);
+
 
         Scene scene = new Scene(layout, 902, 800);
         scene.getStylesheets().addAll(STYLESHEET);
@@ -69,6 +72,26 @@ public class PlayerWindow {
         playerControlsView.onPlayClicked((sender, event) -> {
             if (audioPlayer.isPlaying()) audioPlayer.pause();
             else audioPlayer.play();
+        });
+        playerControlsView.onBackwardClicked((sender, event) -> {
+            if (audioPlayer.isPlaying()) {
+                playlistView.setCurrentlyPlaying(playlistModel.getCurrentSongIndex());
+                audioPlayer.stop();
+                playlistModel.next();
+            }
+            else {
+                audioPlayer.play();
+            }
+        });
+        playerControlsView.onForwardClicked((sender, event) -> {
+            if (audioPlayer.isPlaying()) {
+                playlistView.setCurrentlyPlaying(playlistModel.getCurrentSongIndex());
+                audioPlayer.stop();
+                playlistModel.previous();
+            }
+            else {
+                audioPlayer.play();
+            }
         });
 
         playlistModel.onSongChanged((sender, event) -> {
