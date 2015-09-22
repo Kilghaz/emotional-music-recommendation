@@ -48,7 +48,7 @@ public class FeatureExtractor implements AudioProcessor {
     }
 
     private MFCC createMFCCAudioProcessor() {
-        this.mfccProcessor = new MFCC(windowSize, (int) getSampleRate());
+        this.mfccProcessor = new MFCC(windowSize, (int) getSampleRate(), 13, 13, 100, 10000);
         return this.mfccProcessor;
     }
 
