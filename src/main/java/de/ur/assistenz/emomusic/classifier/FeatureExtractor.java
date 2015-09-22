@@ -140,7 +140,7 @@ public class FeatureExtractor {
                 sampleSize = 16;
             }
             int channels = format.getChannels();
-            boolean isSigned = format.getEncoding() == AudioFormat.Encoding.PCM_SIGNED;
+            boolean isSigned = format.getEncoding() != AudioFormat.Encoding.PCM_UNSIGNED;
             return new TarsosDSPAudioFormat(sampleRate, sampleSize, channels, isSigned, format.isBigEndian());
         }
 

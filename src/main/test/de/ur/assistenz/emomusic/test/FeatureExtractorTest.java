@@ -12,14 +12,16 @@ import java.util.Arrays;
 public class FeatureExtractorTest {
 
     FeatureExtractor featureExtractor = new FeatureExtractor(512, 0);
+    float mfccFilterFrequencyLow = 100;
+    float mfccFilterFrequencyHigh = 10000;
 
     @Test
-    public void testExtract() throws Exception {
-        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, 100, 10000);
+    public void testExtractMP3() throws Exception {
+        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh);
         OverallAverageRMS overallAverageRMS = new OverallAverageRMS();
         featureExtractor.addFeature(overallAverageMFCC);
         featureExtractor.addFeature(overallAverageRMS);
-        featureExtractor.extract(new File("Alice Cooper - Poison.mp3"), null);
+        featureExtractor.extract(new File("test-resources/test_audio.mp3"));
         float[] mfcc = overallAverageMFCC.getFeatureValue();
         float rms = overallAverageRMS.getOverallAverageRMS();
         Assert.assertNotNull(mfcc);
@@ -30,11 +32,30 @@ public class FeatureExtractorTest {
         Assert.assertNotEquals(rms, Float.POSITIVE_INFINITY);
         Assert.assertNotEquals(rms, Float.NEGATIVE_INFINITY);
         Assert.assertNotEquals(rms, Float.NaN);
-        System.out.println("MFCC:\t" + Arrays.toString(mfcc));
-        System.out.println("RMS:\t" + rms);
+        System.err.println("MFCC:\t" + Arrays.toString(mfcc));
+        System.err.println("RMS:\t" + rms);
     }
 
-    // Array test helpers
+    @Test
+    public void testExtractWAV() throws Exception {
+        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh);
+        OverallAverageRMS overallAverageRMS = new OverallAverageRMS();
+        featureExtractor.addFeature(overallAverageMFCC);
+        featureExtractor.addFeature(overallAverageRMS);
+        featureExtractor.extract(new File("test-resources/test_audio.wav"));
+        float[] mfcc = overallAverageMFCC.getFeatureValue();
+        float rms = overallAverageRMS.getOverallAverageRMS();
+        Assert.assertNotNull(mfcc);
+        assertArrayValuesNot(mfcc, 0);
+        assertArrayValuesNot(mfcc, Float.POSITIVE_INFINITY);
+        assertArrayValuesNot(mfcc, Float.NEGATIVE_INFINITY);
+        assertArrayValuesNot(mfcc, Float.NaN);
+        Assert.assertNotEquals(rms, Float.POSITIVE_INFINITY);
+        Assert.assertNotEquals(rms, Float.NEGATIVE_INFINITY);
+        Assert.assertNotEquals(rms, Float.NaN);
+        System.err.println("MFCC:\t" + Arrays.toString(mfcc));
+        System.err.println("RMS:\t" + rms);
+    }
 
     private void assertArrayValuesNot(float[] array, float value) {
         for (float val : array) {
