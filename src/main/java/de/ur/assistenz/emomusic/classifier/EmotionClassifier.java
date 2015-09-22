@@ -66,7 +66,7 @@ public class EmotionClassifier {
     }
 
     private void train() {
-        TrainingDataLoader dataLoader = new TrainingDataLoader();
+        CSVDataLoader dataLoader = new CSVDataLoader();
         try {
             dataLoader.read("training_data.csv");
         } catch (IOException e) {

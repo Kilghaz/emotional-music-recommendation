@@ -37,6 +37,10 @@ public class FeatureExtractor {
         this.features.remove(feature);
     }
 
+    public List<EmotionFeature> getFeatures() {
+        return features;
+    }
+
     private int calculateFeatureCount() {
         int count = 0;
         for(EmotionFeature feature : features) {

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class TrainingDataLoader {
+public class CSVDataLoader {
 
     private List<String> trainingDataRaw;
     private List<String> headers;
