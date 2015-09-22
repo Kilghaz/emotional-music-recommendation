@@ -1,12 +1,10 @@
 package de.ur.assistenz.emomusic.classifier;
 
 import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
-import be.tarsos.dsp.mfcc.MFCC;
-import weka.core.Instance;
+import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
+import weka.core.*;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -17,96 +15,93 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeatureExtractor implements AudioProcessor {
+public class FeatureExtractor {
+
+    private static final String RELATION = "features";
 
     private int windowSize = 512;
     private int windowOverlap = 0;
 
-    private AudioDispatcher dispatcher;
-    private MFCC mfccProcessor;
-
-    private int windowCount = 0;
-
-    private List<float[]> mfccValues;
-    private List<Double> rmsValues;
-
-    private float[] overallAverageMFCC;
-    private double overallAverageRMS;
+    private List<EmotionFeature> features = new ArrayList<>();
 
     public FeatureExtractor(int windowSize, int windowOverlap) {
         this.windowSize = windowSize;
         this.windowOverlap = windowOverlap;
     }
 
-    public Instance extract(File file) throws IOException, UnsupportedAudioFileException {
-        initAudioDispatcher(file).run();
-        return null;
+    public void addFeature(EmotionFeature feature) {
+        this.features.add(feature);
     }
 
-    private float getSampleRate() {
-        return dispatcher.getFormat().getSampleRate();
+    public void removeFeature(EmotionFeature feature) {
+        this.features.remove(feature);
     }
 
-    private MFCC createMFCCAudioProcessor() {
-        this.mfccProcessor = new MFCC(windowSize, (int) getSampleRate(), 13, 13, 100, 10000);
-        return this.mfccProcessor;
-    }
-
-    private AudioDispatcher initAudioDispatcher(File file) throws IOException, UnsupportedAudioFileException {
-        DefaultsAudioInputStream stream = new DefaultsAudioInputStream(file);
-        this.dispatcher = new AudioDispatcher(stream, windowSize, windowOverlap);
-        this.dispatcher.addAudioProcessor(createMFCCAudioProcessor());
-        this.dispatcher.addAudioProcessor(this);
-        this.mfccValues = new ArrayList<>();
-        this.rmsValues = new ArrayList<>();
-        this.windowCount = 0;
-        return this.dispatcher;
-    }
-
-    @Override
-    public boolean process(AudioEvent audioEvent) {
-        mfccValues.add(this.mfccProcessor.getMFCC());
-        rmsValues.add(audioEvent.getRMS());
-        this.windowCount++;
-        return true;
-    }
-
-    private float[] calculateOverallAverageMFCC() {
-        float[] overallAverageMFCC = new float[13];  // use only the first 13 mfccs
-        for(int i = 0; i < overallAverageMFCC.length; i++) {
-            overallAverageMFCC[i] = 0;
+    private int calculateFeatureCount() {
+        int count = 0;
+        for(EmotionFeature feature : features) {
+            count += feature.getFeatureDimenion();
         }
-        for(float[] values : mfccValues) {
-            for(int i = 0; i < overallAverageMFCC.length; i++) {
-                overallAverageMFCC[i] += values[i];
+        return count;
+    }
+
+    private Attribute createAttribute(EmotionFeature feature, int index) {
+        return new Attribute(feature.getFeatureName(index));
+    }
+
+    public FastVector createFeatureVectorDefinition(Attribute classAttribute) {
+        FastVector definitionVector = new FastVector(calculateFeatureCount() + 1);
+        definitionVector.addElement(classAttribute);
+        for(EmotionFeature feature : features) {
+            float[] values = feature.getFeatureValue();
+            for(int i = 0; i < values.length; i++) {
+                definitionVector.addElement(createAttribute(feature, i));
             }
         }
-        for(int i = 0; i < overallAverageMFCC.length; i++) {
-            overallAverageMFCC[i] /= this.windowCount;
+        return definitionVector;
+    }
+
+    public Instance extract(File file, FastVector featureVectorDefinition) throws IOException, UnsupportedAudioFileException {
+        createAudioDispatcher(file).run();
+        Instance instance = new SparseInstance(calculateFeatureCount() + 1);
+        for(EmotionFeature feature : features) {
+            float[] values = feature.getFeatureValue();
+            for(int i = 0; i < values.length; i++) {
+                Attribute attribute = createAttribute(feature, i);
+                instance.setValue(attribute, values[i]);
+            }
         }
-        return overallAverageMFCC;
-    }
 
-    private double calculateOverallAverageRMS() {
-        float overallAverageRMS = 0;
-        for(double value : this.rmsValues) {
-            overallAverageRMS += value;
+        this.createFeatureVectorDefinition(null);
+
+        if(featureVectorDefinition != null) {
+            Instances dataSet = new Instances(RELATION, featureVectorDefinition, 1);
+            dataSet.add(instance);
+            dataSet.setClassIndex(0);
+
+            return dataSet.firstInstance();
         }
-        return overallAverageRMS / this.windowCount;
+        else {
+            return instance;
+        }
     }
 
-    @Override
-    public void processingFinished() {
-        this.overallAverageMFCC = calculateOverallAverageMFCC();
-        this.overallAverageRMS = calculateOverallAverageRMS();
+    public void extract(File file) {
+        try {
+            extract(file, null);
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
     }
 
-    public double getOverallAverageRMS() {
-        return overallAverageRMS;
-    }
-
-    public float[] getOverallAverageMFCC() {
-        return overallAverageMFCC;
+    private AudioDispatcher createAudioDispatcher(File file) throws IOException, UnsupportedAudioFileException {
+        DefaultsAudioInputStream stream = new DefaultsAudioInputStream(file);
+        AudioDispatcher dispatcher = new AudioDispatcher(stream, windowSize, windowOverlap);
+        for(EmotionFeature feature : this.features) {
+            feature.setup(dispatcher.getFormat().getSampleRate(), windowSize, windowOverlap);
+            dispatcher.addAudioProcessor(feature);
+        }
+        return dispatcher;
     }
 
     private class DefaultsAudioInputStream implements TarsosDSPAudioInputStream {

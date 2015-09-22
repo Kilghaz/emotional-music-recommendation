@@ -1,10 +1,10 @@
 package de.ur.assistenz.emomusic.classifier;
 
+import de.ur.assistenz.emomusic.classifier.features.OverallAverageMFCC;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.core.*;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,16 +132,12 @@ public class EmotionClassifier {
 
     private Instance extractFeatures(File audioFile) {
         FeatureExtractor featureExtractor = new FeatureExtractor(this.windowSize, (int) this.windowOverlap);
+        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, 100, 10000);
+        featureExtractor.addFeature(overallAverageMFCC);
+        featureExtractor.extract(audioFile);
+
         Instance instance = new SparseInstance(15);
-
-        try {
-            featureExtractor.extract(audioFile);
-        } catch (IOException | UnsupportedAudioFileException e) {
-            e.printStackTrace();
-            return instance;
-        }
-
-        float[] mfcc = featureExtractor.getOverallAverageMFCC();
+        float[] mfcc = overallAverageMFCC.getFeatureValue();
 
         int mfccOffset = 1;
 

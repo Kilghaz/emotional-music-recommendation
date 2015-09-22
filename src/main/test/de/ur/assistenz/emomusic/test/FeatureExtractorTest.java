@@ -1,6 +1,8 @@
 package de.ur.assistenz.emomusic.test;
 
 import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
+import de.ur.assistenz.emomusic.classifier.features.OverallAverageMFCC;
+import de.ur.assistenz.emomusic.classifier.features.OverallAverageRMS;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,20 +15,23 @@ public class FeatureExtractorTest {
 
     @Test
     public void testExtract() throws Exception {
-        featureExtractor.extract(new File("Alice Cooper - Poison.mp3"));
-        float[] mfcc = featureExtractor.getOverallAverageMFCC();
-        double rms = featureExtractor.getOverallAverageRMS();
+        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, 100, 10000);
+        OverallAverageRMS overallAverageRMS = new OverallAverageRMS();
+        featureExtractor.addFeature(overallAverageMFCC);
+        featureExtractor.addFeature(overallAverageRMS);
+        featureExtractor.extract(new File("Alice Cooper - Poison.mp3"), null);
+        float[] mfcc = overallAverageMFCC.getFeatureValue();
+        float rms = overallAverageRMS.getOverallAverageRMS();
         Assert.assertNotNull(mfcc);
         assertArrayValuesNot(mfcc, 0);
         assertArrayValuesNot(mfcc, Float.POSITIVE_INFINITY);
         assertArrayValuesNot(mfcc, Float.NEGATIVE_INFINITY);
         assertArrayValuesNot(mfcc, Float.NaN);
-        assertArrayValuesNotNull(mfcc);
-        Assert.assertNotEquals(rms, Double.POSITIVE_INFINITY);
-        Assert.assertNotEquals(rms, Double.NEGATIVE_INFINITY);
-        Assert.assertNotEquals(rms, Double.NaN);
+        Assert.assertNotEquals(rms, Float.POSITIVE_INFINITY);
+        Assert.assertNotEquals(rms, Float.NEGATIVE_INFINITY);
+        Assert.assertNotEquals(rms, Float.NaN);
         System.out.println("MFCC:\t" + Arrays.toString(mfcc));
-        System.out.println("RMS:\t" + featureExtractor.getOverallAverageRMS());
+        System.out.println("RMS:\t" + rms);
     }
 
     // Array test helpers
