@@ -6,6 +6,8 @@ import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
 import de.ur.assistenz.emomusic.classifier.XMLTrainingDataBuilder;
 import de.ur.assistenz.emomusic.classifier.features.OverallAverageMFCC;
 import de.ur.assistenz.emomusic.classifier.features.OverallAverageRMS;
+import de.ur.assistenz.emomusic.classifier.features.OverallStandardDeviationMFCC;
+import de.ur.assistenz.emomusic.classifier.features.OverallStandardDeviationRMS;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class CreateTrainingData {
         FeatureExtractor featureExtractor = new FeatureExtractor(512, 0);
         featureExtractor.addFeature(new OverallAverageMFCC(13, 100, 10000));
         featureExtractor.addFeature(new OverallAverageRMS());
+        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 100, 1000));
+        featureExtractor.addFeature(new OverallStandardDeviationRMS());
         return featureExtractor;
     }
 
