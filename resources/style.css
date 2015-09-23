@@ -1,26 +1,28 @@
-.button, .button:hover { -fx-background-color: #1A454D; -fx-text-fill: #EBEBEB; -fx-border-width: 0; -fx-font-weight: bold; }
+.button, .button:hover { -fx-background-color: #16272B; -fx-text-fill: #fcfafa; -fx-border-width: 0; -fx-font-weight: bold; }
 
 .button:hover { -fx-background-color: #215660; -fx-border-color: #215660; -fx-border-width: 0; }
 
-.btn-play:hover, .btn-pause:hover, btn-back:hover, btn-next:hover { -fx-background-color: transparent; }
+.btn-play:hover, .btn-pause:hover, .btn-back:hover, .btn-next:hover { -fx-background-color: transparent; }
 
 .btn-play { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; }
 
 .btn-pause { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; -fx-background-position: -80px; }
 
-.btn-filter { -fx-background-color: #121A1C; -fx-background-size: 160px; }
+.btn-filter, .btn-open { -fx-background-color: #1A454D; -fx-background-size: 160px; -fx-border-color: #121A1C #121A1C #121A1C #121A1C; -fx-border-width: 0.5px; }
 
-.btn-next { -fx-background-color: transparent; -fx-background-image: url("images/btn-next.png"); -fx-background-size: 160px; }
+.btn-filter:hover, .btn-open:hover { -fx-background-color: #FF4E50; }
 
-.btn-back { -fx-background-color: transparent; -fx-background-image: url("images/btn-back.png"); -fx-background-size: 160px; }
+.btn-next { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; -fx-background-position: -80px; }
+
+.btn-back { -fx-background-color: transparent; -fx-background-image: url("images/btn-play.png"); -fx-background-size: 160px; -fx-background-position: -80px; }
 
 .table-view, .playlist { -fx-background-color: #16272B; }
 
-.song, .column { -fx-background-color: #121A1C; -fx-text-fill: #EBEBEB; -fx-border-width: 1px; -fx-border-color: #16272B transparent transparent transparent; }
+.song, .column { -fx-background-color: #121A1C; -fx-text-fill: #fcfafa; -fx-font-size: 12px; -fx-border-width: 1px; -fx-border-color: transparent #16272B transparent transparent; }
 
 .song:hover, .column { -fx-background-color: #172123; }
 
-.playlist .column-header .label { -fx-text-fill: #EBEBEB; -fx-font-weight: bold; }
+.playlist .column-header .label { -fx-text-fill: #fcfafa; -fx-font-weight: bold; -fx-font-size: 12px; -fx-border-color: transparent transparent #16272B transparent; }
 
 * { -fx-font-family: Helvetica, Arial, sans-serif; }
 

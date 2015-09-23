@@ -30,6 +30,11 @@ public class ToolbarView extends ToolBar {
     private void initGUI(){
         this.getItems().add(btnOpen);
         btnOpen.setOnAction(this::onOpenClicked);
+
+        this.btnOpen.getStyleClass().addAll("button", "btn-open");
+        this.btnOpen.setPrefHeight(50);
+        this.btnOpen.setPrefWidth(80);
+        this.btnOpen.setMinWidth(80);
     }
 
     public void onLibraryFolderSelected(EventReceiver<FileEvent> receiver) {

@@ -1,5 +1,5 @@
 .button, .button:hover {
-    -fx-background-color: $color-background-light;
+    -fx-background-color: $color-background;
     -fx-text-fill: $color-foreground;
     -fx-border-width: 0;
     -fx-font-weight: bold;
@@ -11,7 +11,7 @@
     -fx-border-width: 0;
 }
 
-.btn-play:hover, .btn-pause:hover, btn-back:hover, btn-next:hover {
+.btn-play:hover, .btn-pause:hover, .btn-back:hover, .btn-next:hover {
     -fx-background-color: transparent;
 }
 
@@ -28,19 +28,28 @@
     -fx-background-position: -80px;
 }
 
-.btn-filter {
-    -fx-background-color: $color-background-dark;
+.btn-filter, .btn-open {
+    -fx-background-color: $color-background-light;
     -fx-background-size: 160px;
+    -fx-border-color: $color-background-dark $color-background-dark $color-background-dark $color-background-dark;
+    -fx-border-width: 0.5px;
 }
+
+.btn-filter:hover, .btn-open:hover {
+  -fx-background-color: $color-primary;
+}
+
 
 .btn-next {
   -fx-background-color: transparent;
-  -fx-background-image: url("images/btn-next.png");
+  -fx-background-image: url("images/btn-play.png");
   -fx-background-size: 160px;
+  -fx-background-position: -80px;
 }
 
 .btn-back {
   -fx-background-color: transparent;
-  -fx-background-image: url("images/btn-back.png");
+  -fx-background-image: url("images/btn-play.png");
   -fx-background-size: 160px;
+  -fx-background-position: -80px;
 }
