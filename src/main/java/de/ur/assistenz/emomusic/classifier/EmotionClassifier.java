@@ -1,34 +1,30 @@
 package de.ur.assistenz.emomusic.classifier;
 
-import de.ur.assistenz.emomusic.classifier.features.OverallAverageMFCC;
+import de.ur.assistenz.emomusic.classifier.features.*;
+import org.xml.sax.SAXException;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.core.*;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class EmotionClassifier {
 
-    private static final String RELATION = "music_emotion";
-
-    private int windowSize = 512;   // samples
-    private double windowOverlap = 0.0;
-    private double samplingRate = 16.0;
+    private static final int WINDOW_SIZE = 512;
+    private static final int WINDOW_OVERLAP = 0;
+    private static final float KAPPA_THRESHOLD = 0.50f;
 
     private static EmotionClassifier instance = null;
 
     private Classifier classifier;
-    private FastVector featureVectorDefinition;
-
-    private double kappaThreshold = 0.50;
+    private FeatureExtractor featureExtractor;
+    private XMLTrainingDataLoader loader = new XMLTrainingDataLoader();
 
     public EmotionClassifier() {
         instance = this;
-        this.featureVectorDefinition = createFeatureVectorDefinition();
+        this.featureExtractor = createFeatureExtractor();
         train();
     }
 
@@ -36,59 +32,13 @@ public class EmotionClassifier {
         return instance == null ? new EmotionClassifier() : instance;
     }
 
-    private FastVector createFeatureVectorDefinition() {
-        FastVector emotionValues = new FastVector(4);
-        emotionValues.addElement("happy_amazed");
-        emotionValues.addElement("sad_lonely");
-        emotionValues.addElement("angry");
-        emotionValues.addElement("calm_relaxing");
-
-        FastVector definitionVector = new FastVector(14);
-        definitionVector.addElement(new Attribute("emotion", emotionValues));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_0"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_1"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_2"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_3"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_4"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_5"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_6"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_7"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_8"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_9"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_10"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_11"));
-        definitionVector.addElement(new Attribute("mfcc_overall_average_12"));
-
-        // Spectral flux is not in the training data so we cannot use it for now.
-        // definitionVector.addElement(new Attribute("spectral_flux_overall_average_0"));
-
-        return definitionVector;
-    }
-
     private void train() {
-        CSVDataLoader dataLoader = new CSVDataLoader();
+        Instances trainingSet = null;
+
         try {
-            dataLoader.read("training_data.csv");
-        } catch (IOException e) {
+            trainingSet = loader.load(new File("training_data.xml"), KAPPA_THRESHOLD);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
-        }
-        List<HashMap<String, String>> values = dataLoader.getInstances();
-
-        Instances trainingSet = new Instances(RELATION, featureVectorDefinition, values.size());
-        trainingSet.setClassIndex(0);
-
-        for(HashMap<String, String> songFeatures : values) {
-            double kappa = getDoubleValue("fleiss_kappa_annotation", songFeatures);
-            if(kappa < this.kappaThreshold) {
-                continue;
-            }
-            Instance featureVector = new SparseInstance(featureVectorDefinition.capacity());
-            featureVector.setValue((Attribute) featureVectorDefinition.elementAt(0), selectAnnotation(songFeatures));
-            for(int i = 1; i < featureVectorDefinition.capacity(); i++) {
-                Attribute attr = (Attribute) featureVectorDefinition.elementAt(i);
-                featureVector.setValue(attr, getDoubleValue(attr.name(), songFeatures));
-            }
-            trainingSet.add(featureVector);
         }
 
         this.classifier = new NaiveBayes(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
@@ -100,52 +50,30 @@ public class EmotionClassifier {
 
     }
 
-    private Double getDoubleValue(String key, HashMap<String, String> songFeatures) {
-        return Double.parseDouble(songFeatures.get(key).replace(",", "."));
-    }
-
-    private String selectAnnotation(HashMap<String, String> instance) {
-        List<String> annotations = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            annotations.add(instance.get("annotation_" + i));
-        }
-        String annotation = null;
-        int maxCount = 0;
-        for(String a : annotations) {
-            int count = count(a, annotations);
-            if(count > maxCount) {
-                annotation = a;
-            }
-        }
-        return annotation;
-    }
-
-    private int count(String needle, List<String> haystack) {
-        int count = 0;
-        for(String value : haystack) {
-            if(value.equals(needle)) {
-                count++;
-            }
-        }
-        return count;
+    private FeatureExtractor createFeatureExtractor() {
+        FeatureExtractor featureExtractor = new FeatureExtractor(WINDOW_SIZE, WINDOW_OVERLAP);
+        featureExtractor.addFeature(new OverallAverageMFCC(13, 100, 10000));
+        featureExtractor.addFeature(new OverallAverageRMS());
+        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 100, 10000));
+        featureExtractor.addFeature(new OverallStandardDeviationRMS());
+        featureExtractor.addFeature(new DominantPitches(5));
+        return featureExtractor;
     }
 
     private Instance extractFeatures(File audioFile) {
-        FeatureExtractor featureExtractor = new FeatureExtractor(this.windowSize, (int) this.windowOverlap);
-        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, 100, 10000);
-        featureExtractor.addFeature(overallAverageMFCC);
         featureExtractor.extract(audioFile);
+        FastVector featureVectorDefinition = loader.getFeatureVectorDefinition();
 
-        Instance instance = new SparseInstance(15);
-        float[] mfcc = overallAverageMFCC.getFeatureValue();
+        Instance instance = new SparseInstance(featureVectorDefinition.size());
 
-        int mfccOffset = 1;
-
-        for(int i = 0; i < mfcc.length; i++) {
-            instance.setValue((Attribute)featureVectorDefinition.elementAt(i + mfccOffset), mfcc[i]);
+        for(EmotionFeature feature : featureExtractor.getFeatures()) {
+            float[] values = feature.getFeatureValue();
+            for(int i = 0; i < values.length; i++) {
+                instance.setValue(new Attribute(feature.getFeatureName(i)), values[i]);
+            }
         }
 
-        Instances dataSet = new Instances(RELATION, featureVectorDefinition, 1);
+        Instances dataSet = new Instances(XMLTrainingDataLoader.RELATION, featureVectorDefinition, 1);
         dataSet.add(instance);
         dataSet.setClassIndex(0);
 
@@ -169,36 +97,4 @@ public class EmotionClassifier {
         return null;
     }
 
-    public double getKappaThreshold() {
-        return kappaThreshold;
-    }
-
-    public void setKappaThreshold(double kappaThreshold) {
-        this.kappaThreshold = kappaThreshold;
-        train();
-    }
-
-    public int getWindowSize() {
-        return windowSize;
-    }
-
-    public void setWindowSize(int windowSize) {
-        this.windowSize = windowSize;
-    }
-
-    public double getWindowOverlap() {
-        return windowOverlap;
-    }
-
-    public void setWindowOverlap(double windowOverlap) {
-        this.windowOverlap = windowOverlap;
-    }
-
-    public double getSamplingRate() {
-        return samplingRate;
-    }
-
-    public void setSamplingRate(double samplingRate) {
-        this.samplingRate = samplingRate;
-    }
 }
