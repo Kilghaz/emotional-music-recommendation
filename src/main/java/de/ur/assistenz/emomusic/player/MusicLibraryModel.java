@@ -35,7 +35,6 @@ public class MusicLibraryModel {
     private EmotionClassifier classifier = new EmotionClassifier();
 
     private MusicLibraryModel(){
-        classifier.setKappaThreshold(0.90);
         this.derby = DatabaseAdapterProvider.getInstance().getAdapter();
         initializeDatabase();
         this.eventSender.register(EVENT_SCAN_FINISHED);
