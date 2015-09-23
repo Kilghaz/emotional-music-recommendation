@@ -1,8 +1,7 @@
 package de.ur.assistenz.emomusic.test;
 
 import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
-import de.ur.assistenz.emomusic.classifier.features.OverallAverageMFCC;
-import de.ur.assistenz.emomusic.classifier.features.OverallAverageRMS;
+import de.ur.assistenz.emomusic.classifier.features.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,23 +16,16 @@ public class FeatureExtractorTest {
 
     @Test
     public void testExtractMP3() throws Exception {
-        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh);
-        OverallAverageRMS overallAverageRMS = new OverallAverageRMS();
-        featureExtractor.addFeature(overallAverageMFCC);
-        featureExtractor.addFeature(overallAverageRMS);
+        featureExtractor.addFeature(new OverallAverageMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh));
+        featureExtractor.addFeature(new OverallAverageRMS());
+        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh));
+        featureExtractor.addFeature(new OverallStandardDeviationRMS());
         featureExtractor.extract(new File("test-resources/test_audio.mp3"));
-        float[] mfcc = overallAverageMFCC.getFeatureValue();
-        float rms = overallAverageRMS.getOverallAverageRMS();
-        Assert.assertNotNull(mfcc);
-        assertArrayValuesNot(mfcc, 0);
-        assertArrayValuesNot(mfcc, Float.POSITIVE_INFINITY);
-        assertArrayValuesNot(mfcc, Float.NEGATIVE_INFINITY);
-        assertArrayValuesNot(mfcc, Float.NaN);
-        Assert.assertNotEquals(rms, Float.POSITIVE_INFINITY);
-        Assert.assertNotEquals(rms, Float.NEGATIVE_INFINITY);
-        Assert.assertNotEquals(rms, Float.NaN);
-        System.err.println("MFCC:\t" + Arrays.toString(mfcc));
-        System.err.println("RMS:\t" + rms);
+        for(EmotionFeature feature : featureExtractor.getFeatures()) {
+            float[] values = feature.getFeatureValue();
+            testFeature(values);
+            System.out.println(feature.getFeatureName() + ":\t" + Arrays.toString(values));
+        }
     }
 
     @Test
@@ -42,19 +34,21 @@ public class FeatureExtractorTest {
         OverallAverageRMS overallAverageRMS = new OverallAverageRMS();
         featureExtractor.addFeature(overallAverageMFCC);
         featureExtractor.addFeature(overallAverageRMS);
+        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh));
+        featureExtractor.addFeature(new OverallStandardDeviationRMS());
         featureExtractor.extract(new File("test-resources/test_audio.wav"));
-        float[] mfcc = overallAverageMFCC.getFeatureValue();
-        float rms = overallAverageRMS.getOverallAverageRMS();
-        Assert.assertNotNull(mfcc);
-        assertArrayValuesNot(mfcc, 0);
-        assertArrayValuesNot(mfcc, Float.POSITIVE_INFINITY);
-        assertArrayValuesNot(mfcc, Float.NEGATIVE_INFINITY);
-        assertArrayValuesNot(mfcc, Float.NaN);
-        Assert.assertNotEquals(rms, Float.POSITIVE_INFINITY);
-        Assert.assertNotEquals(rms, Float.NEGATIVE_INFINITY);
-        Assert.assertNotEquals(rms, Float.NaN);
-        System.err.println("MFCC:\t" + Arrays.toString(mfcc));
-        System.err.println("RMS:\t" + rms);
+        for(EmotionFeature feature : featureExtractor.getFeatures()) {
+            float[] values = feature.getFeatureValue();
+            testFeature(values);
+        }
+    }
+
+    private void testFeature(float[] values) {
+        Assert.assertNotNull(values);
+        assertArrayValuesNot(values, 0);
+        assertArrayValuesNot(values, Float.POSITIVE_INFINITY);
+        assertArrayValuesNot(values, Float.NEGATIVE_INFINITY);
+        assertArrayValuesNot(values, Float.NaN);
     }
 
     private void assertArrayValuesNot(float[] array, float value) {
