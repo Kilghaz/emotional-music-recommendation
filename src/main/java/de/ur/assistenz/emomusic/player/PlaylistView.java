@@ -33,9 +33,10 @@ public class PlaylistView extends TableView<Song> {
     }
 
     private void initColumns() {
-        TableColumn<Song, String> titleColumn   = new TableColumn<>();
-        TableColumn<Song, String> artistColumn  = new TableColumn<>();
-        TableColumn<Song, String> yearColumn    = new TableColumn<>();
+        TableColumn<Song, String> titleColumn      = new TableColumn<>();
+        TableColumn<Song, String> artistColumn     = new TableColumn<>();
+        TableColumn<Song, String> yearColumn       = new TableColumn<>();
+        TableColumn<Song, String> emotionColumn    = new TableColumn<>();
 
         titleColumn.setCellValueFactory(cellElement -> new SimpleStringProperty(cellElement.getValue().getName()));
         titleColumn.setText("Title");
@@ -49,10 +50,15 @@ public class PlaylistView extends TableView<Song> {
         yearColumn.setText("Year");
         yearColumn.setMinWidth(175);
         yearColumn.getStyleClass().add("song");
+        emotionColumn.setCellValueFactory(cellElement -> new SimpleStringProperty(cellElement.getValue().getEmotion()));
+        emotionColumn.setText("Emotion");
+        emotionColumn.setMinWidth(175);
+        emotionColumn.getStyleClass().add("song");
 
         getColumns().add(titleColumn);
         getColumns().add(artistColumn);
         getColumns().add(yearColumn);
+        getColumns().add(emotionColumn);
     }
 
     public void setCurrentlyPlaying(int index) {
