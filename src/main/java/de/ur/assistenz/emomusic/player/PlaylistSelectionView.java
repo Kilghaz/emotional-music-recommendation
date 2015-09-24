@@ -54,34 +54,34 @@ public class PlaylistSelectionView extends VBox {
 
     private void initGUI() {
 
-        buttonLibrary = new Button("Library");
-        buttonHappy = new Button("Happy");
-        buttonAngry = new Button("Angry");
-        buttonSad = new Button("Sad");
-        buttonCalm = new Button("Calm");
+        buttonLibrary = new Button();
+        buttonHappy = new Button();
+        buttonAngry = new Button();
+        buttonSad = new Button();
+        buttonCalm = new Button();
         this.getChildren().add(buttonLibrary);
         this.getChildren().add(buttonHappy);
         this.getChildren().add(buttonAngry);
         this.getChildren().add(buttonSad);
         this.getChildren().add(buttonCalm);
 
-        this.buttonLibrary.getStyleClass().addAll("button", "btn-filter");
+        this.buttonLibrary.getStyleClass().addAll("button", "btn-filter", "btn-library");
         this.buttonLibrary.setPrefHeight(124);
         this.buttonLibrary.setPrefWidth(125);
         this.buttonLibrary.setMinWidth(125);
-        this.buttonHappy.getStyleClass().addAll("button", "btn-filter");
+        this.buttonHappy.getStyleClass().addAll("button", "btn-filter", "btn-happy");
         this.buttonHappy.setPrefHeight(124);
         this.buttonHappy.setPrefWidth(125);
         this.buttonHappy.setMinWidth(125);
-        this.buttonAngry.getStyleClass().addAll("button", "btn-filter");
+        this.buttonAngry.getStyleClass().addAll("button", "btn-filter", "btn-angry");
         this.buttonAngry.setPrefHeight(124);
         this.buttonAngry.setPrefWidth(125);
         this.buttonAngry.setMinWidth(125);
-        this.buttonSad.getStyleClass().addAll("button", "btn-filter");
+        this.buttonSad.getStyleClass().addAll("button", "btn-filter", "btn-sad");
         this.buttonSad.setPrefHeight(124);
         this.buttonSad.setPrefWidth(125);
         this.buttonSad.setMinWidth(125);
-        this.buttonCalm.getStyleClass().addAll("button", "btn-filter");
+        this.buttonCalm.getStyleClass().addAll("button", "btn-filter", "btn-calm");
         this.buttonCalm.setPrefHeight(124);
         this.buttonCalm.setPrefWidth(125);
         this.buttonCalm.setMinWidth(125);

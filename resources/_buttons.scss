@@ -28,11 +28,35 @@
     -fx-background-position: -80px;
 }
 
+.btn-library {
+  -fx-background-image: url("images/library.png");
+}
+
+.btn-angry {
+  -fx-background-image: url("images/angry.png");
+}
+
+.btn-happy {
+  -fx-background-image: url("images/happy.png");
+}
+
+.btn-sad {
+  -fx-background-image: url("images/sad.png");
+}
+
+.btn-calm {
+  -fx-background-image: url("images/calm.png");
+}
+
 .btn-filter, .btn-open {
     -fx-background-color: $color-background-light;
-    -fx-background-size: 160px;
+    -fx-background-size: 65px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
     -fx-border-color: $color-background-dark $color-background-dark $color-background-dark $color-background-dark;
     -fx-border-width: 0.5px;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
 }
 
 .btn-filter:hover, .btn-open:hover {
@@ -42,14 +66,12 @@
 
 .btn-next {
   -fx-background-color: transparent;
-  -fx-background-image: url("images/btn-play.png");
-  -fx-background-size: 160px;
-  -fx-background-position: -80px;
+  -fx-background-image: url("images/next.png");
+  -fx-background-size: 80px;
 }
 
 .btn-back {
   -fx-background-color: transparent;
-  -fx-background-image: url("images/btn-play.png");
-  -fx-background-size: 160px;
-  -fx-background-position: -80px;
+  -fx-background-image: url("images/back.png");
+  -fx-background-size: 80px;
 }

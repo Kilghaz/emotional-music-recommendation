@@ -15,9 +15,9 @@ public class PlayerControlsView extends HBox {
     private static final String EVENT_PLAY_CLICKED = "sender";
     private static final String EVENT_FORWARD_CLICKED = "forward";
 
-    private Button buttonBackward = new Button("back");
+    private Button buttonBackward = new Button();
     private Button buttonPlay = new Button();
-    private Button buttonForward = new Button("next");
+    private Button buttonForward = new Button();
     private Slider progressSlider = new Slider();
 
     private EventSender<Event> eventSender = new EventSender<>();
