@@ -140,8 +140,9 @@ public class FeatureExtractor {
                 sampleSize = 16;
             }
             int channels = format.getChannels();
-            boolean isSigned = format.getEncoding() != AudioFormat.Encoding.PCM_UNSIGNED;
-            return new TarsosDSPAudioFormat(sampleRate, sampleSize, channels, isSigned, format.isBigEndian());
+            boolean isSigned = false; // format.getEncoding() != AudioFormat.Encoding.PCM_UNSIGNED;
+            boolean isBigEndian = true; // format.isBigEndian()
+            return new TarsosDSPAudioFormat(sampleRate, sampleSize, channels, isSigned, isBigEndian);
         }
 
         @Override
@@ -154,4 +155,11 @@ public class FeatureExtractor {
         }
     }
 
+    public int getWindowOverlap() {
+        return windowOverlap;
+    }
+
+    public int getWindowSize() {
+        return windowSize;
+    }
 }

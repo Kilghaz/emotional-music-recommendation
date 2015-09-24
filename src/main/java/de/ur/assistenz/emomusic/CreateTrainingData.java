@@ -1,10 +1,6 @@
 package de.ur.assistenz.emomusic;
 
-import de.ur.assistenz.emomusic.classifier.AnnotatedFile;
-import de.ur.assistenz.emomusic.classifier.CSVDataLoader;
-import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
-import de.ur.assistenz.emomusic.classifier.XMLTrainingDataBuilder;
-import de.ur.assistenz.emomusic.classifier.features.*;
+import de.ur.assistenz.emomusic.classifier.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,11 +10,11 @@ import java.util.List;
 public class CreateTrainingData {
 
     public CreateTrainingData(String filePath, String csv, String out) throws Exception {
+        EmotionClassifier classifier = new EmotionClassifier();
         File[] files = new File(filePath).listFiles();
         List<AnnotatedFile> annotatedFiles = createAnnotatedFiles(files, csv);
-        FeatureExtractor featureExtractor = createFeatureExtractor();
         XMLTrainingDataBuilder xmlTrainingDataBuilder = new XMLTrainingDataBuilder();
-        String xml = xmlTrainingDataBuilder.build(annotatedFiles, featureExtractor);
+        String xml = xmlTrainingDataBuilder.build(annotatedFiles, classifier);
         writeXML(xml, new File(out));
     }
 
@@ -26,16 +22,6 @@ public class CreateTrainingData {
         PrintWriter printWriter = new PrintWriter(file, "UTF-8");
         printWriter.print(xml);
         printWriter.close();
-    }
-
-    private FeatureExtractor createFeatureExtractor() {
-        FeatureExtractor featureExtractor = new FeatureExtractor(512, 0);
-        featureExtractor.addFeature(new OverallAverageMFCC(13, 100, 10000));
-        featureExtractor.addFeature(new OverallAverageRMS());
-        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 100, 1000));
-        featureExtractor.addFeature(new OverallStandardDeviationRMS());
-        featureExtractor.addFeature(new DominantPitches(5));
-        return featureExtractor;
     }
 
     private List<AnnotatedFile> createAnnotatedFiles(File[] files, String csv) throws IOException {
@@ -52,9 +38,13 @@ public class CreateTrainingData {
             annotations.add(instance.get("annotation_2"));
             annotatedFiles.add(new AnnotatedFile(file, annotations));
             current += 1.0;
-            System.out.println("reading csv: " + current / instances.size());
+            System.out.println("reading csv: " + calculateProgress(current, instances.size()) + "%");
         }
         return annotatedFiles;
+    }
+
+    private double calculateProgress(double current, double max) {
+        return ((double)(int)(current/max * 10000))/100;
     }
 
     private File bestMatchingFile(File[] files, String filename) {

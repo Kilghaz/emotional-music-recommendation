@@ -26,7 +26,7 @@ public class OverallAverageMFCC extends MFCC {
 
     @Override
     public String getFeatureName() {
-        return "Overall Average MFCC";
+        return "Overall Average MFCC (" + this.getFilterFrequencyLow() + "-" + this.getFilterFrequencyHigh() + ")";
     }
 
 }

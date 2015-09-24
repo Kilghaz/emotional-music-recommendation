@@ -1,5 +1,6 @@
 package de.ur.assistenz.emomusic.classifier;
 
+import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -11,7 +12,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class XMLTrainingDataLoader {
 
@@ -35,12 +38,12 @@ public class XMLTrainingDataLoader {
 
     private FastVector featureVectorDefinition;
 
-    public Instances load(File file, float kappaThreshold) throws ParserConfigurationException, IOException, SAXException {
+    public Instances load(File file, float kappaThreshold, List<EmotionFeature> usedFeatures) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(file);
         NodeList songs = document.getElementsByTagName(TAG_INSTANCE);
 
-        featureVectorDefinition = createFeatureVectorDefinition((Element) songs.item(0));
+        featureVectorDefinition = createFeatureVectorDefinition((Element) songs.item(0), usedFeatures);
         Instances instances = new Instances(RELATION, featureVectorDefinition, songs.getLength());
         instances.setClassIndex(0);
 
@@ -104,12 +107,25 @@ public class XMLTrainingDataLoader {
         return result;
     }
 
-    private FastVector createFeatureVectorDefinition(Element songElement) {
-        NodeList features = songElement.getElementsByTagName(TAG_FEATURE);
-        FastVector featureVectorDefinition = new FastVector(features.getLength() + 1);
-        featureVectorDefinition.addElement(new Attribute("emotion", CLASS_VALUES));
+    private List<Element> filterUsedFeatures(NodeList features, List<EmotionFeature> usedFeatures) {
+        List<Element> nodes = new ArrayList<>();
         for (int i = 0; i < features.getLength(); i++) {
             Element feature = (Element) features.item(i);
+            String featureName = feature.getElementsByTagName(TAG_FEATURE_NAME).item(0).getTextContent();
+            for(EmotionFeature usedFeature : usedFeatures){
+                if(featureName.startsWith(usedFeature.getFeatureName())){
+                    nodes.add(feature);
+                }
+            }
+        }
+        return nodes;
+    }
+
+    private FastVector createFeatureVectorDefinition(Element songElement, List<EmotionFeature> usedFeatures) {
+        List<Element> features = filterUsedFeatures(songElement.getElementsByTagName(TAG_FEATURE), usedFeatures);
+        FastVector featureVectorDefinition = new FastVector(features.size() + 1);
+        featureVectorDefinition.addElement(new Attribute("emotion", CLASS_VALUES));
+        for (Element feature : features) {
             String featureName = feature.getElementsByTagName(TAG_FEATURE_NAME).item(0).getTextContent();
             featureVectorDefinition.addElement(new Attribute(featureName));
         }

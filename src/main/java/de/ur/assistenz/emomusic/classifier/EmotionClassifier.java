@@ -10,21 +10,21 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 
-public class EmotionClassifier {
+public class EmotionClassifier implements FeatureExtractorFactory {
 
     private static final int WINDOW_SIZE = 512;
     private static final int WINDOW_OVERLAP = 0;
-    private static final float KAPPA_THRESHOLD = 0.50f;
+    private static final float KAPPA_THRESHOLD = 0.90f;
+
+    private static final File TRAINING_DATA = new File("training_data.xml");
 
     private static EmotionClassifier instance = null;
 
     private Classifier classifier;
-    private FeatureExtractor featureExtractor;
     private XMLTrainingDataLoader loader = new XMLTrainingDataLoader();
 
     public EmotionClassifier() {
         instance = this;
-        this.featureExtractor = createFeatureExtractor();
         train();
     }
 
@@ -36,7 +36,7 @@ public class EmotionClassifier {
         Instances trainingSet = null;
 
         try {
-            trainingSet = loader.load(new File("training_data.xml"), KAPPA_THRESHOLD);
+            trainingSet = loader.load(TRAINING_DATA, KAPPA_THRESHOLD, createFeatureExtractorInstance().getFeatures());
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
@@ -50,17 +50,8 @@ public class EmotionClassifier {
 
     }
 
-    private FeatureExtractor createFeatureExtractor() {
-        FeatureExtractor featureExtractor = new FeatureExtractor(WINDOW_SIZE, WINDOW_OVERLAP);
-        featureExtractor.addFeature(new OverallAverageMFCC(13, 100, 10000));
-        featureExtractor.addFeature(new OverallAverageRMS());
-        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 100, 10000));
-        featureExtractor.addFeature(new OverallStandardDeviationRMS());
-        featureExtractor.addFeature(new DominantPitches(5));
-        return featureExtractor;
-    }
-
     private Instance extractFeatures(File audioFile) {
+        FeatureExtractor featureExtractor = this.createFeatureExtractorInstance();
         featureExtractor.extract(audioFile);
         FastVector featureVectorDefinition = loader.getFeatureVectorDefinition();
 
@@ -95,6 +86,18 @@ public class EmotionClassifier {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public FeatureExtractor createFeatureExtractorInstance() {
+        FeatureExtractor featureExtractor = new FeatureExtractor(WINDOW_SIZE, WINDOW_OVERLAP);
+        // using values from (McKinney et al., 2003)
+        featureExtractor.addFeature(new OverallAverageMFCC(13, 133.3334f, 22000f));
+        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 133.3334f, 22000f));
+        featureExtractor.addFeature(new OverallAverageRMS());
+        featureExtractor.addFeature(new OverallStandardDeviationRMS());
+        featureExtractor.addFeature(new DominantPitches(5));
+        return featureExtractor;
     }
 
 }

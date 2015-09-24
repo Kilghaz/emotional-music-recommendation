@@ -1,5 +1,6 @@
 package de.ur.assistenz.emomusic.test;
 
+import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
 import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
 import de.ur.assistenz.emomusic.classifier.features.*;
 import org.junit.Assert;
@@ -10,16 +11,9 @@ import java.util.Arrays;
 
 public class FeatureExtractorTest {
 
-    FeatureExtractor featureExtractor = new FeatureExtractor(512, 0);
-    float mfccFilterFrequencyLow = 100;
-    float mfccFilterFrequencyHigh = 10000;
-
     @Test
     public void testExtractMP3() throws Exception {
-        featureExtractor.addFeature(new OverallAverageMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh));
-        featureExtractor.addFeature(new OverallAverageRMS());
-        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh));
-        featureExtractor.addFeature(new OverallStandardDeviationRMS());
+        FeatureExtractor featureExtractor = new EmotionClassifier().createFeatureExtractorInstance();
         featureExtractor.extract(new File("test-resources/test_audio.mp3"));
         for(EmotionFeature feature : featureExtractor.getFeatures()) {
             float[] values = feature.getFeatureValue();
@@ -30,16 +24,12 @@ public class FeatureExtractorTest {
 
     @Test
     public void testExtractWAV() throws Exception {
-        OverallAverageMFCC overallAverageMFCC = new OverallAverageMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh);
-        OverallAverageRMS overallAverageRMS = new OverallAverageRMS();
-        featureExtractor.addFeature(overallAverageMFCC);
-        featureExtractor.addFeature(overallAverageRMS);
-        featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, mfccFilterFrequencyLow, mfccFilterFrequencyHigh));
-        featureExtractor.addFeature(new OverallStandardDeviationRMS());
+        FeatureExtractor featureExtractor = new EmotionClassifier().createFeatureExtractorInstance();
         featureExtractor.extract(new File("test-resources/test_audio.wav"));
         for(EmotionFeature feature : featureExtractor.getFeatures()) {
             float[] values = feature.getFeatureValue();
             testFeature(values);
+            System.out.println(feature.getFeatureName() + ":\t" + Arrays.toString(values));
         }
     }
 
