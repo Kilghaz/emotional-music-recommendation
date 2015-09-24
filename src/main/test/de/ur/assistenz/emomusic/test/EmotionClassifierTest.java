@@ -3,7 +3,7 @@ package de.ur.assistenz.emomusic.test;
 import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
 import org.junit.Test;
 import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.meta.ClassificationViaRegression;
 import weka.core.Debug;
 import weka.core.Instances;
 
@@ -23,7 +23,7 @@ public class EmotionClassifierTest {
         EmotionClassifier classifier = new EmotionClassifier();
         Instances trainingSet = classifier.getTrainingData();
         Evaluation eval = new Evaluation(trainingSet);
-        eval.crossValidateModel(new NaiveBayes(), trainingSet, 10, new Debug.Random(1));
+        eval.crossValidateModel(new ClassificationViaRegression(), trainingSet, 25, new Debug.Random(10));
         System.out.println(eval.toSummaryString(false));
     }
 

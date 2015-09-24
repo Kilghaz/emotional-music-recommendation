@@ -98,6 +98,7 @@ public class EmotionClassifier implements FeatureExtractorFactory {
         featureExtractor.addFeature(new OverallAverageRMS());
         featureExtractor.addFeature(new OverallStandardDeviationRMS());
         featureExtractor.addFeature(new OverallAveragePitch());
+        featureExtractor.addFeature(new OverallStandardDeviationPitch());
         return featureExtractor;
     }
 
