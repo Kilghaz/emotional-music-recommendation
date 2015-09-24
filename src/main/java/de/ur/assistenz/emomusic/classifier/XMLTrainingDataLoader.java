@@ -47,7 +47,7 @@ public class XMLTrainingDataLoader {
         Instances instances = new Instances(RELATION, featureVectorDefinition, songs.getLength());
         instances.setClassIndex(0);
 
-        for(int i = 0; i< songs.getLength(); i++) {
+        for(int i = 0; i < songs.getLength(); i++) {
             Element song = (Element) songs.item(i);
             float kappa = extractKappaValue(song);
             if (kappa < kappaThreshold)

@@ -1,7 +1,6 @@
 package de.ur.assistenz.emomusic.test;
 
 import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
-import de.ur.assistenz.emomusic.classifier.XMLTrainingDataLoader;
 import org.junit.Test;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
@@ -22,8 +21,7 @@ public class EmotionClassifierTest {
     @Test
     public void evaluateClassification() throws Exception {
         EmotionClassifier classifier = new EmotionClassifier();
-        XMLTrainingDataLoader loader = new XMLTrainingDataLoader();
-        Instances trainingSet = loader.load(new File("training_data.xml"), 0.9f, classifier.createFeatureExtractorInstance().getFeatures());
+        Instances trainingSet = classifier.getTrainingData();
         Evaluation eval = new Evaluation(trainingSet);
         eval.crossValidateModel(new NaiveBayes(), trainingSet, 10, new Debug.Random(1));
         System.out.println(eval.toSummaryString(false));

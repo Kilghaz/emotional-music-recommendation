@@ -1,14 +1,11 @@
 package de.ur.assistenz.emomusic.classifier.features;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 
 import java.util.*;
 import java.util.stream.Stream;
 
-public class DominantPitches implements EmotionFeature, PitchDetectionHandler {
+public class DominantPitches extends Pitch {
 
     private static final HashMap<Float, String> NOTES = new HashMap<>();
     private static final float NO_PITCH_DETECTED = -1.0f;
@@ -55,27 +52,12 @@ public class DominantPitches implements EmotionFeature, PitchDetectionHandler {
         NOTES.put(3951.07f, "B7");
     }
 
-    private PitchProcessor pitchProcessor;
-    private PitchProcessor.PitchEstimationAlgorithm estimationAlgorithm;
 
-    private List<Float> pitchValues = new ArrayList<>();
     private int pitchCounts = 0;
 
-    private float[] featureValues;
-
     public DominantPitches(int pitchCounts) {
-        this.estimationAlgorithm = PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET;
+        super(PitchProcessor.PitchEstimationAlgorithm.DYNAMIC_WAVELET);
         this.pitchCounts = pitchCounts;
-    }
-
-    @Override
-    public void setup(float sampleRate, int windowSize, int windowOverlap) {
-        pitchProcessor = new PitchProcessor(this.estimationAlgorithm, sampleRate, windowSize, this);
-    }
-
-    @Override
-    public float[] getFeatureValue() {
-        return this.featureValues;
     }
 
     @Override
@@ -89,25 +71,9 @@ public class DominantPitches implements EmotionFeature, PitchDetectionHandler {
     }
 
     @Override
-    public int getFeatureDimenion() {
-        return this.getFeatureValue().length;
-    }
-
-    @Override
-    public boolean process(AudioEvent audioEvent) {
-        try {
-            pitchProcessor.process(audioEvent);
-        }
-        catch (AssertionError e) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public void processingFinished() {
         HashMap<String, Integer> noteCounts = new HashMap<>();
-        for(float pitch : this.pitchValues) {
+        for(float pitch : this.getPitchValues()) {
             String note = getMostSimilarNote(pitch);
             if(noteCounts.get(note) == null) {
                 noteCounts.put(note, 0);
@@ -126,14 +92,6 @@ public class DominantPitches implements EmotionFeature, PitchDetectionHandler {
         }
         this.setFeatureValues(result);
         reset();
-    }
-
-    protected void reset() {
-        this.pitchValues = new ArrayList<>();
-    }
-
-    protected void setFeatureValues(float[] featureValues) {
-        this.featureValues = featureValues;
     }
 
     private float getPitch(String note) {
@@ -156,14 +114,6 @@ public class DominantPitches implements EmotionFeature, PitchDetectionHandler {
             }
         }
         return note;
-    }
-
-    @Override
-    public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-        float pitch = pitchDetectionResult.getPitch();
-        if(pitch == NO_PITCH_DETECTED)
-            return;
-        this.pitchValues.add(pitch);
     }
 
     private <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {

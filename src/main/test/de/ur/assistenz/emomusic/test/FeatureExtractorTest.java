@@ -2,8 +2,7 @@ package de.ur.assistenz.emomusic.test;
 
 import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
 import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
-import de.ur.assistenz.emomusic.classifier.features.*;
-import org.junit.Assert;
+import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,28 +12,26 @@ public class FeatureExtractorTest {
 
     @Test
     public void testExtractMP3() throws Exception {
-        FeatureExtractor featureExtractor = new EmotionClassifier().createFeatureExtractorInstance();
-        featureExtractor.extract(new File("test-resources/test_audio.mp3"));
-        for(EmotionFeature feature : featureExtractor.getFeatures()) {
-            float[] values = feature.getFeatureValue();
-            testFeature(values);
-            System.out.println(feature.getFeatureName() + ":\t" + Arrays.toString(values));
-        }
+        testExtract(new File("test-resources/test_audio.mp3"));
     }
 
     @Test
     public void testExtractWAV() throws Exception {
+        testExtract(new File("test-resources/test_audio.wav"));
+    }
+
+    private void testExtract(File file) throws Exception {
         FeatureExtractor featureExtractor = new EmotionClassifier().createFeatureExtractorInstance();
-        featureExtractor.extract(new File("test-resources/test_audio.wav"));
+        featureExtractor.extract(file);
         for(EmotionFeature feature : featureExtractor.getFeatures()) {
             float[] values = feature.getFeatureValue();
             testFeature(values);
-            System.out.println(feature.getFeatureName() + ":\t" + Arrays.toString(values));
+            System.out.println(feature.getFeatureName() + ":\n" + Arrays.toString(values) + "\n");
         }
     }
 
     private void testFeature(float[] values) {
-        Assert.assertNotNull(values);
+        assert values != null;
         assertArrayValuesNot(values, 0);
         assertArrayValuesNot(values, Float.POSITIVE_INFINITY);
         assertArrayValuesNot(values, Float.NEGATIVE_INFINITY);
@@ -43,13 +40,7 @@ public class FeatureExtractorTest {
 
     private void assertArrayValuesNot(float[] array, float value) {
         for (float val : array) {
-            Assert.assertNotEquals(val, value);
-        }
-    }
-
-    private void assertArrayValuesNotNull(float[] array) {
-        for (float val : array) {
-            Assert.assertNotNull(val);
+            assert val != value;
         }
     }
 

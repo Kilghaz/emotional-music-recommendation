@@ -14,7 +14,7 @@ public class EmotionClassifier implements FeatureExtractorFactory {
 
     private static final int WINDOW_SIZE = 512;
     private static final int WINDOW_OVERLAP = 0;
-    private static final float KAPPA_THRESHOLD = 0.90f;
+    private static final float KAPPA_THRESHOLD = 0.9f;
 
     private static final File TRAINING_DATA = new File("training_data.xml");
 
@@ -22,6 +22,7 @@ public class EmotionClassifier implements FeatureExtractorFactory {
 
     private Classifier classifier;
     private XMLTrainingDataLoader loader = new XMLTrainingDataLoader();
+    private Instances trainingData;
 
     public EmotionClassifier() {
         instance = this;
@@ -33,17 +34,17 @@ public class EmotionClassifier implements FeatureExtractorFactory {
     }
 
     private void train() {
-        Instances trainingSet = null;
+        trainingData = null;
 
         try {
-            trainingSet = loader.load(TRAINING_DATA, KAPPA_THRESHOLD, createFeatureExtractorInstance().getFeatures());
+            trainingData = loader.load(TRAINING_DATA, KAPPA_THRESHOLD, createFeatureExtractorInstance().getFeatures());
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
 
         this.classifier = new NaiveBayes(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
         try {
-            this.classifier.buildClassifier(trainingSet);
+            this.classifier.buildClassifier(trainingData);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,12 +93,16 @@ public class EmotionClassifier implements FeatureExtractorFactory {
     public FeatureExtractor createFeatureExtractorInstance() {
         FeatureExtractor featureExtractor = new FeatureExtractor(WINDOW_SIZE, WINDOW_OVERLAP);
         // using values from (McKinney et al., 2003)
-        featureExtractor.addFeature(new OverallAverageMFCC(13, 133.3334f, 22000f));
+        // featureExtractor.addFeature(new OverallAverageMFCC(13, 133.3334f, 22000f));
         featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 133.3334f, 22000f));
         featureExtractor.addFeature(new OverallAverageRMS());
         featureExtractor.addFeature(new OverallStandardDeviationRMS());
-        featureExtractor.addFeature(new DominantPitches(5));
+        featureExtractor.addFeature(new OverallAveragePitch());
         return featureExtractor;
+    }
+
+    public Instances getTrainingData() {
+        return trainingData;
     }
 
 }
