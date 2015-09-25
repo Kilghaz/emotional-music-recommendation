@@ -1,11 +1,11 @@
 package de.ur.assistenz.emomusic.classifier;
 
 import de.ur.assistenz.emomusic.classifier.features.*;
-import de.ur.assistenz.emomusic.jaudio.JAudioFeatureExtractor;
-import de.ur.assistenz.emomusic.jaudio.JAudioFeatureProcessor;
-import de.ur.assistenz.emomusic.jaudio.JAudioFeautreProcessorFactory;
-import de.ur.assistenz.emomusic.jaudio.JAudioInverseOverallAverageAggregator;
+import de.ur.assistenz.emomusic.jaudio.*;
+import de.ur.assistenz.emomusic.jaudio.XMLTrainingDataLoader;
+import jAudioFeatureExtractor.AudioFeatures.Chroma;
 import jAudioFeatureExtractor.AudioFeatures.MFCC;
+import jAudioFeatureExtractor.AudioFeatures.RMS;
 import org.xml.sax.SAXException;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.ClassificationViaRegression;
@@ -42,7 +42,7 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
         trainingData = null;
 
         try {
-            trainingData = loader.load(TRAINING_DATA, KAPPA_THRESHOLD, createFeatureExtractorInstance().getFeatures());
+            trainingData = loader.load(TRAINING_DATA, KAPPA_THRESHOLD, createFeatureProcessor().getFeatures());
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
@@ -57,16 +57,16 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
     }
 
     private Instance extractFeatures(File audioFile) {
-        FeatureExtractor featureExtractor = this.createFeatureExtractorInstance();
-        featureExtractor.extract(audioFile);
+        JAudioFeatureProcessor featureProcessor = this.createFeatureProcessor();
+        featureProcessor.extractFeatures(audioFile);
         FastVector featureVectorDefinition = loader.getFeatureVectorDefinition();
 
         Instance instance = new SparseInstance(featureVectorDefinition.size());
 
-        for(EmotionFeature feature : featureExtractor.getFeatures()) {
-            float[] values = feature.getFeatureValue();
+        for(JAudioFeatureExtractor feature : featureProcessor.getFeatures()) {
+            double[] values = feature.getAggreatedFeatureValues();
             for(int i = 0; i < values.length; i++) {
-                instance.setValue(new Attribute(feature.getFeatureName(i)), values[i]);
+                instance.setValue(new Attribute(feature.getName(i)), values[i]);
             }
         }
 
@@ -110,7 +110,12 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
     @Override
     public JAudioFeatureProcessor createFeatureProcessor() {
         JAudioFeatureProcessor processor = new JAudioFeatureProcessor(WINDOW_SIZE, WINDOW_OVERLAP);
-        processor.addFeatureExtractor(new JAudioFeatureExtractor(new MFCC(), new JAudioInverseOverallAverageAggregator())); // Overall Average MFCC
+        processor.addFeatureExtractor(new MFCC(), new JAudioInverseOverallAverageAggregator());
+        processor.addFeatureExtractor(new MFCC(), new JAudioOverallStandardDeviationAggregaotor());
+        processor.addFeatureExtractor(new RMS());
+        // processor.addFeatureExtractor(new StrongestBeat());
+        // processor.addFeatureExtractor(new BeatHistogram());
+        processor.addFeatureExtractor(new Chroma());
         return processor;
     }
 
