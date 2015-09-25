@@ -17,6 +17,7 @@ import org.jaudiotagger.tag.Tag;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MusicLibraryModel {
 
@@ -144,11 +145,20 @@ public class MusicLibraryModel {
 
     private Tag readSongMeta(File file) {
         try {
+            AudioFileIO.logger = new NullLogger();
             AudioFile audioFile = AudioFileIO.read(file);
             return audioFile.getTag();
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private class NullLogger extends Logger {
+
+        protected NullLogger() {
+            super("", "");
+        }
+
     }
 
 }

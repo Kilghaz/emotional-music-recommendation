@@ -1,20 +1,25 @@
 package de.ur.assistenz.emomusic.classifier;
 
 import de.ur.assistenz.emomusic.classifier.features.*;
+import de.ur.assistenz.emomusic.jaudio.JAudioFeatureExtractor;
+import de.ur.assistenz.emomusic.jaudio.JAudioFeatureProcessor;
+import de.ur.assistenz.emomusic.jaudio.JAudioFeautreProcessorFactory;
+import de.ur.assistenz.emomusic.jaudio.JAudioInverseOverallAverageAggregator;
+import jAudioFeatureExtractor.AudioFeatures.MFCC;
 import org.xml.sax.SAXException;
 import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.meta.ClassificationViaRegression;
 import weka.core.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 
-public class EmotionClassifier implements FeatureExtractorFactory {
+public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautreProcessorFactory {
 
-    private static final int WINDOW_SIZE = 512;
-    private static final int WINDOW_OVERLAP = 0;
-    private static final float KAPPA_THRESHOLD = 0.9f;
+    private static final int WINDOW_SIZE = 441;
+    private static final int WINDOW_OVERLAP = 100;
+    private static final float KAPPA_THRESHOLD = 0.0f;
 
     private static final File TRAINING_DATA = new File("training_data.xml");
 
@@ -42,7 +47,7 @@ public class EmotionClassifier implements FeatureExtractorFactory {
             e.printStackTrace();
         }
 
-        this.classifier = new NaiveBayes(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
+        this.classifier = new ClassificationViaRegression(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
         try {
             this.classifier.buildClassifier(trainingData);
         } catch (Exception e) {
@@ -65,7 +70,7 @@ public class EmotionClassifier implements FeatureExtractorFactory {
             }
         }
 
-        Instances dataSet = new Instances(XMLTrainingDataLoader.RELATION, featureVectorDefinition, 1);
+        Instances dataSet = trainingData;
         dataSet.add(instance);
         dataSet.setClassIndex(0);
 
@@ -93,13 +98,20 @@ public class EmotionClassifier implements FeatureExtractorFactory {
     public FeatureExtractor createFeatureExtractorInstance() {
         FeatureExtractor featureExtractor = new FeatureExtractor(WINDOW_SIZE, WINDOW_OVERLAP);
         // using values from (McKinney et al., 2003)
-        // featureExtractor.addFeature(new OverallAverageMFCC(13, 133.3334f, 22000f));
+        featureExtractor.addFeature(new OverallAverageMFCC(13, 133.3334f, 22000f));
         featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 133.3334f, 22000f));
         featureExtractor.addFeature(new OverallAverageRMS());
         featureExtractor.addFeature(new OverallStandardDeviationRMS());
         featureExtractor.addFeature(new OverallAveragePitch());
         featureExtractor.addFeature(new OverallStandardDeviationPitch());
         return featureExtractor;
+    }
+
+    @Override
+    public JAudioFeatureProcessor createFeatureProcessor() {
+        JAudioFeatureProcessor processor = new JAudioFeatureProcessor(WINDOW_SIZE, WINDOW_OVERLAP);
+        processor.addFeatureExtractor(new JAudioFeatureExtractor(new MFCC(), new JAudioInverseOverallAverageAggregator())); // Overall Average MFCC
+        return processor;
     }
 
     public Instances getTrainingData() {

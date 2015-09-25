@@ -1,6 +1,9 @@
 package de.ur.assistenz.emomusic;
 
-import de.ur.assistenz.emomusic.classifier.*;
+import de.ur.assistenz.emomusic.classifier.AnnotatedFile;
+import de.ur.assistenz.emomusic.classifier.CSVDataLoader;
+import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
+import de.ur.assistenz.emomusic.jaudio.XMLTrainingDataBuilder;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +16,7 @@ public class CreateTrainingData {
         EmotionClassifier classifier = new EmotionClassifier();
         File[] files = new File(filePath).listFiles();
         List<AnnotatedFile> annotatedFiles = createAnnotatedFiles(files, csv);
-        XMLTrainingDataBuilder xmlTrainingDataBuilder = new XMLTrainingDataBuilder();
+        XMLTrainingDataBuilder xmlTrainingDataBuilder = new de.ur.assistenz.emomusic.jaudio.XMLTrainingDataBuilder();
         String xml = xmlTrainingDataBuilder.build(annotatedFiles, classifier);
         writeXML(xml, new File(out));
     }
