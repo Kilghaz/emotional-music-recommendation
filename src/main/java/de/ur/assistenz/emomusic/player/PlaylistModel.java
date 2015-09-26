@@ -70,7 +70,7 @@ public class PlaylistModel {
 
     public void setCurrentSong(Song song) {
         int index = songs.indexOf(song);
-        if (index > 0) {
+        if (index >= 0 && index < this.getSongs().size() && index != this.currentSong) {
             this.currentSong = index;
             eventSender.notify(EVENT_SONG_CHANGED);
         }

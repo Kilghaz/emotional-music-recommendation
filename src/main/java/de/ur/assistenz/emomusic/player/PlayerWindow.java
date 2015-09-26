@@ -74,24 +74,10 @@ public class PlayerWindow {
             else audioPlayer.play();
         });
         playerControlsView.onBackwardClicked((sender, event) -> {
-            if (audioPlayer.isPlaying()) {
-                playlistView.setCurrentlyPlaying(playlistModel.getCurrentSongIndex());
-                audioPlayer.stop();
-                playlistModel.next();
-            }
-            else {
-                audioPlayer.play();
-            }
+            playlistModel.previous();
         });
         playerControlsView.onForwardClicked((sender, event) -> {
-            if (audioPlayer.isPlaying()) {
-                playlistView.setCurrentlyPlaying(playlistModel.getCurrentSongIndex());
-                audioPlayer.stop();
-                playlistModel.previous();
-            }
-            else {
-                audioPlayer.play();
-            }
+            playlistModel.next();
         });
 
         playlistModel.onSongChanged((sender, event) -> {

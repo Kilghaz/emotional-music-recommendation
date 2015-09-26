@@ -46,6 +46,8 @@ public class XMLTrainingDataLoader {
         Instances instances = new Instances(RELATION, featureVectorDefinition, songs.getLength());
         instances.setClassIndex(0);
 
+        HashMap<String, Integer> annotationCounts = new HashMap<>();
+
         for(int i = 0; i < songs.getLength(); i++) {
             Element song = (Element) songs.item(i);
             float kappa = extractKappaValue(song);
@@ -54,6 +56,13 @@ public class XMLTrainingDataLoader {
             String annotation = extractAnnotation(song);
             HashMap<String, Float> features = extractFeatures(song);
             instances.add(createInstance(annotation, features));
+            Integer count = annotationCounts.get(annotation);
+            if(count == null) count = 0;
+            annotationCounts.put(annotation, count + 1);
+        }
+
+        for(String annotation : annotationCounts.keySet()) {
+            System.out.println(annotation + ": " + annotationCounts.get(annotation));
         }
 
         return instances;

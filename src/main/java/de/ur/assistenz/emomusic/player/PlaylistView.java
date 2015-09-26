@@ -62,7 +62,11 @@ public class PlaylistView extends TableView<Song> {
     }
 
     public void setCurrentlyPlaying(int index) {
-        // this.currentlyPlaying.
+        this.getSelectionModel().select(index);
+    }
+
+    public void setCurrentlyPlaying(Song song) {
+        this.getSelectionModel().select(song);
     }
 
     public void onSongSelected(EventReceiver<SongEvent> receiver) {

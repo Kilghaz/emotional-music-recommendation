@@ -19,7 +19,7 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
 
     private static final int WINDOW_SIZE = 441;
     private static final int WINDOW_OVERLAP = 100;
-    private static final float KAPPA_THRESHOLD = 0.0f;
+    private static final float KAPPA_THRESHOLD = 0.9f;
 
     private static final File TRAINING_DATA = new File("training_data.xml");
 
