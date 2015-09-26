@@ -106,8 +106,9 @@ public class JAudioFeatureProcessor {
         double[] window = new double[this.windowSize];
         int endSample = index + this.windowSize - 1;
         if(endSample < samples.length) {
-            System.arraycopy(samples, index, window, 0, endSample + 1 - index);
-        } else {
+            System.arraycopy(samples, index, window, 0, this.windowSize);
+        }
+        else {
             for(int i = index; i <= endSample; ++i) {
                 if(i < samples.length) {
                     window[i - index] = samples[i];

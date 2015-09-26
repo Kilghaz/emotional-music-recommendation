@@ -3,7 +3,6 @@ package de.ur.assistenz.emomusic.classifier;
 import de.ur.assistenz.emomusic.classifier.features.*;
 import de.ur.assistenz.emomusic.jaudio.*;
 import de.ur.assistenz.emomusic.jaudio.XMLTrainingDataLoader;
-import jAudioFeatureExtractor.AudioFeatures.Chroma;
 import jAudioFeatureExtractor.AudioFeatures.MFCC;
 import jAudioFeatureExtractor.AudioFeatures.RMS;
 import org.xml.sax.SAXException;
@@ -115,7 +114,7 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
         processor.addFeatureExtractor(new RMS());
         // processor.addFeatureExtractor(new StrongestBeat());
         // processor.addFeatureExtractor(new BeatHistogram());
-        processor.addFeatureExtractor(new Chroma());
+        // processor.addFeatureExtractor(new Chroma());
         return processor;
     }
 
