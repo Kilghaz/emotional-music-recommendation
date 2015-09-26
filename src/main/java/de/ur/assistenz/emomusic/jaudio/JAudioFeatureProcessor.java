@@ -1,5 +1,6 @@
 package de.ur.assistenz.emomusic.jaudio;
 
+import jAudioFeatureExtractor.AudioFeatures.FeatureExtractor;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
 
 import javax.sound.sampled.AudioFormat;
@@ -26,6 +27,14 @@ public class JAudioFeatureProcessor {
         this.windowOverlap = windowOverlap;
     }
 
+    public void addFeatureExtractor(FeatureExtractor featureExtractor, JAudioFeatureAggregator aggregator) {
+        featureExtractors.add(new JAudioFeatureExtractor(featureExtractor, aggregator));
+    }
+
+    public void addFeatureExtractor(FeatureExtractor featureExtractor) {
+        featureExtractors.add(new JAudioFeatureExtractor(featureExtractor));
+    }
+
     public void addFeatureExtractor(JAudioFeatureExtractor featureExtractor) {
         featureExtractors.add(featureExtractor);
     }
@@ -41,10 +50,10 @@ public class JAudioFeatureProcessor {
             windowStartIndicesList.add(start);
             start += windowSize - windowOverlap;
         }
-        Integer[] windowStartIndicesI = windowStartIndicesList.toArray(new Integer[1]);
-        int[] windowStartIndices = new int[windowStartIndicesI.length];
-        for (int i = 0; i < windowStartIndices.length; i++)
-            windowStartIndices[i] = windowStartIndicesI[i];
+        int[] windowStartIndices = new int[windowStartIndicesList.size()];
+        for (int i = 0; i < windowStartIndices.length; i++){
+            windowStartIndices[i] = windowStartIndicesList.get(i);
+        }
         return windowStartIndices;
     }
 
