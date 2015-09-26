@@ -1,6 +1,21 @@
 .table-view, .playlist {
     -fx-background-color: $color-background;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-base: $color-background-dark;
+    -fx-control-inner-background: $color-background-dark;
 }
+
+.table-view {
+     .scroll-bar:vertical,
+     .scroll-bar:horizontal {
+         -fx-background-color: $color-background-dark;
+
+         .thumb {
+             -fx-background-color: $color-primary;
+         }
+     }
+ }
 
 .column-header .label {
     -fx-text-fill: $color-foreground;
@@ -12,7 +27,6 @@
 .column-header, .column-header:empty, .column-header-background {
     -fx-text-alignment: left;
     -fx-border-color: transparent $color-background $color-background transparent;
-    -fx-background-color: $color-background-dark * 1.25;
 }
 
 .table-view:focused .table-row-cell:filled:focused:selected,

@@ -15,9 +15,11 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class MusicLibraryModel {
 
@@ -145,18 +147,22 @@ public class MusicLibraryModel {
 
     private Tag readSongMeta(File file) {
         try {
-            AudioFileIO.logger = new NullLogger();
+            PrintStream err = System.err;
+            System.setErr(new PrintStream(new NullOutputStram()));
             AudioFile audioFile = AudioFileIO.read(file);
-            return audioFile.getTag();
+            Tag tag = audioFile.getTag();
+            System.setErr(err);
+            return tag;
         } catch (Exception e) {
             return null;
         }
     }
 
-    private class NullLogger extends Logger {
+    private class NullOutputStram extends OutputStream {
 
-        protected NullLogger() {
-            super("", "");
+        @Override
+        public void write(int b) throws IOException {
+            // ignore
         }
 
     }

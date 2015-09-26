@@ -3,11 +3,12 @@ package de.ur.assistenz.emomusic.classifier;
 import de.ur.assistenz.emomusic.classifier.features.*;
 import de.ur.assistenz.emomusic.jaudio.*;
 import de.ur.assistenz.emomusic.jaudio.XMLTrainingDataLoader;
+import jAudioFeatureExtractor.AudioFeatures.Chroma;
 import jAudioFeatureExtractor.AudioFeatures.MFCC;
 import jAudioFeatureExtractor.AudioFeatures.RMS;
 import org.xml.sax.SAXException;
 import weka.classifiers.Classifier;
-import weka.classifiers.meta.ClassificationViaRegression;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.core.*;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,7 +19,7 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
 
     private static final int WINDOW_SIZE = 441;
     private static final int WINDOW_OVERLAP = 100;
-    private static final float KAPPA_THRESHOLD = 0.9f;
+    private static final float KAPPA_THRESHOLD = 0.90f;
 
     private static final File TRAINING_DATA = new File("training_data.xml");
 
@@ -46,7 +47,7 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
             e.printStackTrace();
         }
 
-        this.classifier = new ClassificationViaRegression(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
+        this.classifier = new NaiveBayes(); // TODO: change to better classifier maybe (NaiveBayesUpdateable)
         try {
             this.classifier.buildClassifier(trainingData);
         } catch (Exception e) {
@@ -69,11 +70,8 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
             }
         }
 
-        Instances dataSet = trainingData;
-        dataSet.add(instance);
-        dataSet.setClassIndex(0);
-
-        return dataSet.firstInstance();
+        instance.setDataset(trainingData);
+        return instance;
     }
 
     public String classify(File audioFile) {
@@ -114,7 +112,7 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
         processor.addFeatureExtractor(new RMS());
         // processor.addFeatureExtractor(new StrongestBeat());
         // processor.addFeatureExtractor(new BeatHistogram());
-        // processor.addFeatureExtractor(new Chroma());
+        processor.addFeatureExtractor(new Chroma());
         return processor;
     }
 
