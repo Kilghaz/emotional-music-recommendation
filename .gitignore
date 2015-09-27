@@ -23,3 +23,12 @@ derby.log
 
 # SCSS/CSS
 style.css
+
+# LaTeX
+documentation/*.aux
+documentation/*.bbl
+documentation/*.blg
+documentation/*.pdf
+documentation/*.log
+documentation/*.out
+documentation/*.synctex.gz
