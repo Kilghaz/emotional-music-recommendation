@@ -134,4 +134,15 @@ public class JAudioFeatureProcessor {
         return featureExtractors;
     }
 
+    public double getFeatureValue(String featureName) {
+        for(JAudioFeatureExtractor featureExtractor : featureExtractors) {
+            for(int i = 0; i < featureExtractor.getDimension(); i++) {
+                if(featureExtractor.getName(i).equals(featureName)) {
+                    return featureExtractor.getAggreatedFeatureValues()[i];
+                }
+            }
+        }
+        return Double.MIN_VALUE;
+    }
+
 }

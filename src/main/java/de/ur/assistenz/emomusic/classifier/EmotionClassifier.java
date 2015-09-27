@@ -62,15 +62,13 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
         FastVector featureVectorDefinition = loader.getFeatureVectorDefinition();
 
         Instance instance = new SparseInstance(featureVectorDefinition.size());
+        instance.setDataset(trainingData);
 
-        for(JAudioFeatureExtractor feature : featureProcessor.getFeatures()) {
-            double[] values = feature.getAggreatedFeatureValues();
-            for(int i = 0; i < values.length; i++) {
-                instance.setValue(new Attribute(feature.getName(i)), values[i]);
-            }
+        for(int i = 1; i < instance.numAttributes(); i++) {
+            Attribute attribute = instance.attribute(i);
+            instance.setValue(attribute, featureProcessor.getFeatureValue(attribute.name()));
         }
 
-        instance.setDataset(trainingData);
         return instance;
     }
 
@@ -94,7 +92,6 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
     @Override
     public FeatureExtractor createFeatureExtractorInstance() {
         FeatureExtractor featureExtractor = new FeatureExtractor(WINDOW_SIZE, WINDOW_OVERLAP);
-        // using values from (McKinney et al., 2003)
         featureExtractor.addFeature(new OverallAverageMFCC(13, 133.3334f, 22000f));
         featureExtractor.addFeature(new OverallStandardDeviationMFCC(13, 133.3334f, 22000f));
         featureExtractor.addFeature(new OverallAverageRMS());
@@ -110,8 +107,6 @@ public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautre
         processor.addFeatureExtractor(new MFCC(), new JAudioInverseOverallAverageAggregator());
         processor.addFeatureExtractor(new MFCC(), new JAudioOverallStandardDeviationAggregaotor());
         processor.addFeatureExtractor(new RMS());
-        // processor.addFeatureExtractor(new StrongestBeat());
-        // processor.addFeatureExtractor(new BeatHistogram());
         processor.addFeatureExtractor(new Chroma());
         return processor;
     }

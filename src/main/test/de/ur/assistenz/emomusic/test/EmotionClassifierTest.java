@@ -39,6 +39,10 @@ public class EmotionClassifierTest {
             Instance instance = trainingSet.instance(i);
             System.out.println(nb.classifyInstance(instance));
         }
+        Instance instance = trainingSet.instance(2);
+        for(int i = 0; i < instance.numAttributes(); i++) {
+            System.out.println(instance.attribute(i) + " = " + instance.value(i));
+        }
     }
 
 }
