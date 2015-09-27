@@ -58,7 +58,7 @@ public class PlaylistView extends TableView<Song> {
         getColumns().add(titleColumn);
         getColumns().add(artistColumn);
         getColumns().add(yearColumn);
-        getColumns().add(emotionColumn);
+        // getColumns().add(emotionColumn);
     }
 
     public void setCurrentlyPlaying(int index) {
