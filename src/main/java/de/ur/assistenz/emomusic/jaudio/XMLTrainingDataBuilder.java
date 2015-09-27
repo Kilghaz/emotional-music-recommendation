@@ -20,7 +20,7 @@ public class XMLTrainingDataBuilder {
 
     private StringBuilder xmlStringBuilder;
 
-    public String build(List<AnnotatedFile> annotatedFiles, JAudioFeautreProcessorFactory factory) {
+    public String build(List<AnnotatedFile> annotatedFiles, JAudioFeatureProcessorFactory factory) {
         indentationLevel = 0;
         indentationLevel++;
         progress = 0;

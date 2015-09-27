@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 
-public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeautreProcessorFactory {
+public class EmotionClassifier implements FeatureExtractorFactory, JAudioFeatureProcessorFactory {
 
     private static final int WINDOW_SIZE = 441;
     private static final int WINDOW_OVERLAP = 100;
