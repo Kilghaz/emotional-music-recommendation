@@ -3,13 +3,16 @@ package de.ur.assistenz.emomusic.player;
 import de.ur.assistenz.emomusic.player.Observer.Event;
 import de.ur.assistenz.emomusic.player.Observer.EventSender;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class PlayerWindow {
 
+    private static final String TITLE = "E.M.O. Music Player";
     private static final String STYLESHEET = "style.css";
+    private static final String ICON = "file:images/icon.png";
 
     private Stage stage;
 
@@ -19,6 +22,7 @@ public class PlayerWindow {
     private AudioPlayer audioPlayer = new AudioPlayer();
     private ToolbarView toolbar = new ToolbarView(stage);
 
+    private PlaylistSelectionModel playlistSelectionModel = new PlaylistSelectionModel();
     private PlaylistModel playlistModel = new PlaylistModel();
     private MusicLibraryModel musicLibraryModel = MusicLibraryModel.getInstance();
 
@@ -34,7 +38,8 @@ public class PlayerWindow {
     }
 
     private void initGUI() {
-        stage.setTitle("E.M.O. Music Player");
+        stage.setTitle(TITLE);
+        stage.getIcons().add(new Image(ICON));
 
         BorderPane layout = new BorderPane();
         layout.getStyleClass().add("player-window");
@@ -99,12 +104,24 @@ public class PlayerWindow {
             musicLibraryModel.scan();
         });
 
+        playlistSelectionModel.onPlaylistChanged((sender, event) -> {
+            SongFilter filter = playlistSelectionModel.getCurrentPlaylistFilter();
+            playlistModel.setSongs(musicLibraryModel.fetchSongs(filter));
+            playlistSelectionView.setActiveButton(playlistSelectionModel.getPlaylist());
+        });
+
+        playlistSelectionView.onLibraryClicked((sender, event)   -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_LIBRARY));
+        playlistSelectionView.onAngryClicked((sender, event)     -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_ANGRY));
+        playlistSelectionView.onHappyPlayClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_HAPPY));
+        playlistSelectionView.onCalmClicked((sender, event)      -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_CALM));
+        playlistSelectionView.onSadClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_SAD));
+
         playlistModel.setSongs(musicLibraryModel.fetchSongs());
     }
 
     private void onMusicLibraryUpdated(EventSender eventSender, Event musicLibraryEvent) {
-        // TODO: create actual playlists
-        playlistModel.setSongs(musicLibraryModel.fetchSongs());
+        SongFilter filter = playlistSelectionModel.getCurrentPlaylistFilter();
+        playlistModel.setSongs(musicLibraryModel.fetchSongs(filter));
     }
 
 }

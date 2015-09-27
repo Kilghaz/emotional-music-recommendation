@@ -6,10 +6,13 @@ import de.ur.assistenz.emomusic.player.Observer.EventSender;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
-/**
- * Created by Jenny on 20.09.2015.
- */
 public class PlaylistSelectionView extends VBox {
+
+    public static final String BUTTON_LIBRARY = "library";
+    public static final String BUTTON_HAPPY = "happy";
+    public static final String BUTTON_ANGRY = "angry";
+    public static final String BUTTON_SAD = "sad";
+    public static final String BUTTON_CALM = "calm";
 
     private Button buttonLibrary;
     private Button buttonHappy;
@@ -50,15 +53,28 @@ public class PlaylistSelectionView extends VBox {
         this.eventSender.on(EVENT_CALM_CLICKED, receiver);
     }
 
-
+    public void setActiveButton(String emotion) {
+        buttonLibrary.getStyleClass().remove("active");
+        buttonAngry.getStyleClass().remove("active");
+        buttonSad.getStyleClass().remove("active");
+        buttonCalm.getStyleClass().remove("active");
+        buttonHappy.getStyleClass().remove("active");
+        switch (emotion) {
+            case BUTTON_LIBRARY: buttonLibrary.getStyleClass().add("active"); break;
+            case BUTTON_ANGRY:   buttonAngry.getStyleClass().add("active"); break;
+            case BUTTON_SAD:     buttonSad.getStyleClass().add("active"); break;
+            case BUTTON_CALM:    buttonCalm.getStyleClass().add("active"); break;
+            case BUTTON_HAPPY:   buttonHappy.getStyleClass().add("active"); break;
+        }
+    }
 
     private void initGUI() {
-
         buttonLibrary = new Button();
         buttonHappy = new Button();
         buttonAngry = new Button();
         buttonSad = new Button();
         buttonCalm = new Button();
+
         this.getChildren().add(buttonLibrary);
         this.getChildren().add(buttonHappy);
         this.getChildren().add(buttonAngry);

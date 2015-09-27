@@ -8,6 +8,11 @@ import de.hijacksoft.oosql.SQLTable;
 @SQLPrimaryKey("id")
 public class Song {
 
+    public static final String EMOTION_ANRGY = "angy";
+    public static final String EMOTION_SAD   = "sad_lonely";
+    public static final String EMOTION_CALM  = "calm_relaxing";
+    public static final String EMOTION_HAPPY = "happy_amazed";
+
     @SQLColumn(value = "id", autoIncrement = true)
     private Integer id;
 

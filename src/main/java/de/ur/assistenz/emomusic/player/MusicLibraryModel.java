@@ -97,6 +97,16 @@ public class MusicLibraryModel {
         return songs;
     }
 
+    public List<Song> fetchSongs(SongFilter filter) {
+        List<Song> songs = new ArrayList<>();
+        for(Song song : fetchSongs()) {
+            if(filter.filter(song)) {
+                songs.add(song);
+            }
+        }
+        return songs;
+    }
+
     public void addSong(File file) {
         Song song = new Song();
         song.setName(file.getName());
