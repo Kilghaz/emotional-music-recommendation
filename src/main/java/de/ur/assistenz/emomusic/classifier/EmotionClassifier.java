@@ -1,6 +1,8 @@
 package de.ur.assistenz.emomusic.classifier;
 
-import de.ur.assistenz.emomusic.classifier.features.*;
+import de.ur.assistenz.emomusic.tarsosdsp.FeatureExtractor;
+import de.ur.assistenz.emomusic.tarsosdsp.FeatureExtractorFactory;
+import de.ur.assistenz.emomusic.tarsosdsp.features.*;
 import de.ur.assistenz.emomusic.jaudio.*;
 import de.ur.assistenz.emomusic.jaudio.XMLTrainingDataLoader;
 import jAudioFeatureExtractor.AudioFeatures.Chroma;

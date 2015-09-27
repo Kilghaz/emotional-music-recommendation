@@ -1,6 +1,9 @@
-package de.ur.assistenz.emomusic.classifier;
+package de.ur.assistenz.emomusic.tarsosdsp;
 
-import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
+import de.ur.assistenz.emomusic.classifier.AnnotatedFile;
+import de.ur.assistenz.emomusic.classifier.FleissKappaCalculator;
+import de.ur.assistenz.emomusic.classifier.TrainingDataBuilder;
+import de.ur.assistenz.emomusic.tarsosdsp.features.TarsosDSPAudioProcessor;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -47,7 +50,7 @@ public class XMLTrainingDataBuilder implements TrainingDataBuilder {
         return xmlStringBuilder.toString();
     }
 
-    private String renderSong(List<String> annotations, List<EmotionFeature> features) {
+    private String renderSong(List<String> annotations, List<TarsosDSPAudioProcessor> features) {
         StringBuilder xml = new StringBuilder();
         xml.append(indentation()).append("<song>\n");
         indentationLevel++;
@@ -61,7 +64,7 @@ public class XMLTrainingDataBuilder implements TrainingDataBuilder {
         xml.append(indentation()).append("</annotations>\n");
         xml.append(indentation()).append("<features>\n");
         indentationLevel++;
-        for(EmotionFeature feature : features) {
+        for(TarsosDSPAudioProcessor feature : features) {
             float[] values = feature.getFeatureValue();
             for(int i = 0; i < feature.getFeatureDimenion(); i++) {
                 xml.append(indentation()).append("<feature>\n");

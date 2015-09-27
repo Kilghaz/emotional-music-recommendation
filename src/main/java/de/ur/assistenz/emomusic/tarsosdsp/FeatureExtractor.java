@@ -1,9 +1,9 @@
-package de.ur.assistenz.emomusic.classifier;
+package de.ur.assistenz.emomusic.tarsosdsp;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
-import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
+import de.ur.assistenz.emomusic.tarsosdsp.features.TarsosDSPAudioProcessor;
 import weka.core.*;
 
 import javax.sound.sampled.AudioFormat;
@@ -22,41 +22,41 @@ public class FeatureExtractor {
     private int windowSize = 512;
     private int windowOverlap = 0;
 
-    private List<EmotionFeature> features = new ArrayList<>();
+    private List<TarsosDSPAudioProcessor> features = new ArrayList<>();
 
     public FeatureExtractor(int windowSize, int windowOverlap) {
         this.windowSize = windowSize;
         this.windowOverlap = windowOverlap;
     }
 
-    public void addFeature(EmotionFeature feature) {
+    public void addFeature(TarsosDSPAudioProcessor feature) {
         this.features.add(feature);
     }
 
-    public void removeFeature(EmotionFeature feature) {
+    public void removeFeature(TarsosDSPAudioProcessor feature) {
         this.features.remove(feature);
     }
 
-    public List<EmotionFeature> getFeatures() {
+    public List<TarsosDSPAudioProcessor> getFeatures() {
         return features;
     }
 
     private int calculateFeatureCount() {
         int count = 0;
-        for(EmotionFeature feature : features) {
+        for(TarsosDSPAudioProcessor feature : features) {
             count += feature.getFeatureDimenion();
         }
         return count;
     }
 
-    private Attribute createAttribute(EmotionFeature feature, int index) {
+    private Attribute createAttribute(TarsosDSPAudioProcessor feature, int index) {
         return new Attribute(feature.getFeatureName(index));
     }
 
     public FastVector createFeatureVectorDefinition(Attribute classAttribute) {
         FastVector definitionVector = new FastVector(calculateFeatureCount() + 1);
         definitionVector.addElement(classAttribute);
-        for(EmotionFeature feature : features) {
+        for(TarsosDSPAudioProcessor feature : features) {
             float[] values = feature.getFeatureValue();
             for(int i = 0; i < values.length; i++) {
                 definitionVector.addElement(createAttribute(feature, i));
@@ -68,7 +68,7 @@ public class FeatureExtractor {
     public Instance extract(File file, FastVector featureVectorDefinition) throws IOException, UnsupportedAudioFileException {
         createAudioDispatcher(file).run();
         Instance instance = new SparseInstance(calculateFeatureCount() + 1);
-        for(EmotionFeature feature : features) {
+        for(TarsosDSPAudioProcessor feature : features) {
             float[] values = feature.getFeatureValue();
             for(int i = 0; i < values.length; i++) {
                 Attribute attribute = createAttribute(feature, i);
@@ -101,7 +101,7 @@ public class FeatureExtractor {
     private AudioDispatcher createAudioDispatcher(File file) throws IOException, UnsupportedAudioFileException {
         DefaultsAudioInputStream stream = new DefaultsAudioInputStream(file);
         AudioDispatcher dispatcher = new AudioDispatcher(stream, windowSize, windowOverlap);
-        for(EmotionFeature feature : this.features) {
+        for(TarsosDSPAudioProcessor feature : this.features) {
             feature.setup(dispatcher.getFormat().getSampleRate(), windowSize, windowOverlap);
             dispatcher.addAudioProcessor(feature);
         }

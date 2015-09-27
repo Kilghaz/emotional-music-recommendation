@@ -1,4 +1,4 @@
-package de.ur.assistenz.emomusic.classifier;
+package de.ur.assistenz.emomusic.tarsosdsp;
 
 public interface FeatureExtractorFactory {
 

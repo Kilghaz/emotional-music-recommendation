@@ -1,4 +1,4 @@
-package de.ur.assistenz.emomusic.classifier.features;
+package de.ur.assistenz.emomusic.tarsosdsp.features;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
@@ -8,7 +8,7 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 import java.util.*;
 import java.util.stream.Stream;
 
-public abstract class Pitch implements EmotionFeature, PitchDetectionHandler {
+public abstract class Pitch implements TarsosDSPAudioProcessor, PitchDetectionHandler {
 
     private static final float NO_PITCH_DETECTED = -1.0f;
 

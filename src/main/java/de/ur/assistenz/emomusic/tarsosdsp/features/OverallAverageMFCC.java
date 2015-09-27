@@ -1,4 +1,4 @@
-package de.ur.assistenz.emomusic.classifier.features;
+package de.ur.assistenz.emomusic.tarsosdsp.features;
 
 public class OverallAverageMFCC extends MFCC {
 

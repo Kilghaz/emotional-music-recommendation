@@ -1,8 +1,8 @@
 package de.ur.assistenz.emomusic.test;
 
-import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
-import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
-import de.ur.assistenz.emomusic.classifier.features.DominantPitches;
+import de.ur.assistenz.emomusic.tarsosdsp.FeatureExtractor;
+import de.ur.assistenz.emomusic.tarsosdsp.features.TarsosDSPAudioProcessor;
+import de.ur.assistenz.emomusic.tarsosdsp.features.DominantPitches;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class DominantPitchesTest {
         FeatureExtractor featureExtractor = new FeatureExtractor(512, 0);
         featureExtractor.addFeature(new DominantPitches(5));
         featureExtractor.extract(new File("test-resources/test_audio.mp3"));
-        for(EmotionFeature feature : featureExtractor.getFeatures()) {
+        for(TarsosDSPAudioProcessor feature : featureExtractor.getFeatures()) {
             float[] values = feature.getFeatureValue();
             testFeature(values);
             System.out.println(Arrays.toString(values));

@@ -1,11 +1,11 @@
-package de.ur.assistenz.emomusic.classifier.features;
+package de.ur.assistenz.emomusic.tarsosdsp.features;
 
 import be.tarsos.dsp.AudioEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MFCC implements EmotionFeature {
+public abstract class MFCC implements TarsosDSPAudioProcessor {
 
     private int coefficients;
     private float filterFrequencyLow;

@@ -1,5 +1,7 @@
 package de.ur.assistenz.emomusic.classifier;
 
+import de.ur.assistenz.emomusic.tarsosdsp.FeatureExtractorFactory;
+
 import java.util.List;
 
 public interface TrainingDataBuilder {

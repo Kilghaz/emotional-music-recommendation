@@ -1,11 +1,11 @@
-package de.ur.assistenz.emomusic.classifier.features;
+package de.ur.assistenz.emomusic.tarsosdsp.features;
 
 import be.tarsos.dsp.AudioEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RMS implements EmotionFeature {
+public abstract class RMS implements TarsosDSPAudioProcessor {
 
     private float value = 0;
     private int windowCount = 0;

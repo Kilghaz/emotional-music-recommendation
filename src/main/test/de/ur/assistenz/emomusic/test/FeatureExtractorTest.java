@@ -1,8 +1,8 @@
 package de.ur.assistenz.emomusic.test;
 
 import de.ur.assistenz.emomusic.classifier.EmotionClassifier;
-import de.ur.assistenz.emomusic.classifier.FeatureExtractor;
-import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
+import de.ur.assistenz.emomusic.tarsosdsp.FeatureExtractor;
+import de.ur.assistenz.emomusic.tarsosdsp.features.TarsosDSPAudioProcessor;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +23,7 @@ public class FeatureExtractorTest {
     private void testExtract(File file) throws Exception {
         FeatureExtractor featureExtractor = new EmotionClassifier().createFeatureExtractorInstance();
         featureExtractor.extract(file);
-        for(EmotionFeature feature : featureExtractor.getFeatures()) {
+        for(TarsosDSPAudioProcessor feature : featureExtractor.getFeatures()) {
             float[] values = feature.getFeatureValue();
             testFeature(values);
             System.out.println(feature.getFeatureName() + ":\n" + Arrays.toString(values) + "\n");

@@ -1,4 +1,4 @@
-package de.ur.assistenz.emomusic.classifier.features;
+package de.ur.assistenz.emomusic.tarsosdsp.features;
 
 import be.tarsos.dsp.pitch.PitchProcessor;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;

@@ -1,6 +1,6 @@
-package de.ur.assistenz.emomusic.classifier;
+package de.ur.assistenz.emomusic.tarsosdsp;
 
-import de.ur.assistenz.emomusic.classifier.features.EmotionFeature;
+import de.ur.assistenz.emomusic.tarsosdsp.features.TarsosDSPAudioProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,7 +38,7 @@ public class XMLTrainingDataLoader {
 
     private FastVector featureVectorDefinition;
 
-    public Instances load(File file, float kappaThreshold, List<EmotionFeature> usedFeatures) throws ParserConfigurationException, IOException, SAXException {
+    public Instances load(File file, float kappaThreshold, List<TarsosDSPAudioProcessor> usedFeatures) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(file);
         NodeList songs = document.getElementsByTagName(TAG_INSTANCE);
@@ -107,12 +107,12 @@ public class XMLTrainingDataLoader {
         return result;
     }
 
-    private List<Element> filterUsedFeatures(NodeList features, List<EmotionFeature> usedFeatures) {
+    private List<Element> filterUsedFeatures(NodeList features, List<TarsosDSPAudioProcessor> usedFeatures) {
         List<Element> nodes = new ArrayList<>();
         for (int i = 0; i < features.getLength(); i++) {
             Element feature = (Element) features.item(i);
             String featureName = feature.getElementsByTagName(TAG_FEATURE_NAME).item(0).getTextContent();
-            for(EmotionFeature usedFeature : usedFeatures){
+            for(TarsosDSPAudioProcessor usedFeature : usedFeatures){
                 if(featureName.startsWith(usedFeature.getFeatureName())){
                     nodes.add(feature);
                 }
@@ -121,7 +121,7 @@ public class XMLTrainingDataLoader {
         return nodes;
     }
 
-    private FastVector createFeatureVectorDefinition(Element songElement, List<EmotionFeature> usedFeatures) {
+    private FastVector createFeatureVectorDefinition(Element songElement, List<TarsosDSPAudioProcessor> usedFeatures) {
         List<Element> features = filterUsedFeatures(songElement.getElementsByTagName(TAG_FEATURE), usedFeatures);
         FastVector featureVectorDefinition = new FastVector(features.size() + 1);
         featureVectorDefinition.addElement(new Attribute("emotion", CLASS_VALUES));
