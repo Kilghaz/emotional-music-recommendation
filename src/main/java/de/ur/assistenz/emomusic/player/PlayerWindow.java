@@ -12,7 +12,7 @@ public class PlayerWindow {
 
     private static final String TITLE = "E.M.O. Music Player";
     private static final String STYLESHEET = "style.css";
-    private static final String ICON = "file:images/icon.png";
+    private static final String ICON = "file:resources/images/icon.png";
 
     private Stage stage;
 
@@ -110,13 +110,14 @@ public class PlayerWindow {
             playlistSelectionView.setActiveButton(playlistSelectionModel.getPlaylist());
         });
 
-        playlistSelectionView.onLibraryClicked((sender, event)   -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_LIBRARY));
-        playlistSelectionView.onAngryClicked((sender, event)     -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_ANGRY));
+        playlistSelectionView.onLibraryClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_LIBRARY));
+        playlistSelectionView.onAngryClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_ANGRY));
         playlistSelectionView.onHappyPlayClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_HAPPY));
-        playlistSelectionView.onCalmClicked((sender, event)      -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_CALM));
+        playlistSelectionView.onCalmClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_CALM));
         playlistSelectionView.onSadClicked((sender, event) -> playlistSelectionModel.setPlaylist(PlaylistSelectionModel.PLAYLIST_SAD));
 
         playlistModel.setSongs(musicLibraryModel.fetchSongs());
+        playlistSelectionView.setActiveButton(playlistSelectionModel.getPlaylist());
     }
 
     private void onMusicLibraryUpdated(EventSender eventSender, Event musicLibraryEvent) {

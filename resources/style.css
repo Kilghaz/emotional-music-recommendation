@@ -20,7 +20,7 @@
 
 .btn-filter, .btn-open { -fx-background-color: #1A454D; -fx-background-size: 65px; -fx-background-repeat: no-repeat; -fx-background-position: center; -fx-border-color: #121A1C #121A1C #121A1C #121A1C; -fx-border-width: 0.5px; -fx-font-size: 1em; -fx-font-weight: bold; }
 
-.btn-filter:hover, .btn-open:hover { -fx-background-color: #FF4E50; }
+.btn-filter:hover, .btn-open:hover, .btn-filter.active  { -fx-background-color: #FF4E50; }
 
 .btn-next { -fx-background-color: transparent; -fx-background-image: url("images/next.png"); -fx-background-size: 80px; }
 

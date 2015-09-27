@@ -59,10 +59,9 @@
     -fx-font-weight: bold;
 }
 
-.btn-filter:hover, .btn-open:hover {
+.btn-filter:hover, .btn-open:hover, .btn-filter.active {
   -fx-background-color: $color-primary;
 }
-
 
 .btn-next {
   -fx-background-color: transparent;

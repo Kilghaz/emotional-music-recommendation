@@ -23,7 +23,7 @@ public class PlaylistSelectionModel {
 
     public PlaylistSelectionModel() {
         playlistFilter.put(PLAYLIST_LIBRARY, (song) -> true);
-        playlistFilter.put(PLAYLIST_ANGRY, (song) -> song.getEmotion().equals(Song.EMOTION_ANRGY));
+        playlistFilter.put(PLAYLIST_ANGRY, (song) -> song.getEmotion().equals(Song.EMOTION_ANGRY));
         playlistFilter.put(PLAYLIST_SAD, (song) -> song.getEmotion().equals(Song.EMOTION_SAD));
         playlistFilter.put(PLAYLIST_CALM, (song) -> song.getEmotion().equals(Song.EMOTION_CALM));
         playlistFilter.put(PLAYLIST_HAPPY, (song) -> song.getEmotion().equals(Song.EMOTION_HAPPY));
