@@ -3,6 +3,7 @@
 \usepackage{lipsum}
 \usepackage[sc]{mathpazo} 
 \usepackage[T1]{fontenc} 
+\usepackage{datetime}
 \linespread{1.05} 
 \usepackage{microtype} % Slightly tweak font spacing for aesthetics
 \usepackage{apacite}
@@ -29,14 +30,25 @@
 \renewcommand{\absnamepos}{empty}
 
 \usepackage{titlesec} % Allows customization of titles
-\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
-\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+%\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+%\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
 \titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
-\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large\scshape\centering}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\newdateformat{monthyeardate}{
+  \monthname[\THEMONTH] \THEYEAR
+}
+
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
 
 \usepackage{fancyhdr} % Headers and footers
 \pagestyle{fancy} % All pages have headers and footers
 \fancyhead{} % Blank out the default header
 \fancyfoot{} % Blank out the default footer
-\fancyhead[C]{Emotional music computing $\bullet$ September 2015} % Custom header text
+\fancyhead[L]{Emotion-based music recommendation using supervised learning} % Custom header text
+\fancyhead[R]{\monthyeardate\today}
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
