@@ -2,6 +2,7 @@
 *.iml
 .idea/
 target/
+out/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
