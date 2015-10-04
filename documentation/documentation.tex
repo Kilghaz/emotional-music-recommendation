@@ -9,13 +9,7 @@
 \usepackage{booktabs} % for pretty table rules
 \usepackage{ccicons}  % for Creative Commons citation icons
 \usepackage{ragged2e} % for tighter hyphenation
-%\usepackage{natbib}   % for cite and cite
-
-% Some optional stuff you might like/need.
-% \usepackage{marginnote}
-% \usepackage[shortlabels]{enumitem}
-% \usepackage{paralist}
-% \usepackage[utf8]{inputenc} % for a UTF8 editor only
+\usepackage[utf8]{inputenc} % for a UTF8 editor only
 
 \copyrightinfo{Permission to make digital or hard copies of all or
 part of this work for personal or classroom use is granted without
@@ -68,8 +62,7 @@ DOI string from ACM form confirmation}
 \definecolor{linkColor}{RGB}{6,125,233}
 \hypersetup{%
   pdftitle={\plaintitle},
-%  pdfauthor={\plainauthor},
-  pdfauthor={\emptyauthor},
+  pdfauthor={\plainauthor},
   pdfkeywords={\plainkeywords},
   bookmarksnumbered,
   pdfstartview={FitH},
@@ -116,7 +109,7 @@ Other projects use the Valence Arousal model, a similar approach. The axes are l
 \begin{figure}
 	\label{tellegen-nwatson-clark}
 	\includegraphics[width=\linewidth]{images/tellegen-watson-clark-model.jpg}
-	\caption{Tellegen-Watson-Clark model of mood} \cite{Tellegen1999}
+	\caption{Tellegen-Watson-Clark model of mood \cite{Tellegen1999}}
 \end{figure}
 
 \subsection{Feature Extraction and Classification}
@@ -140,15 +133,15 @@ To create a the training data for the classifier, we accumulated a collection of
 Those songs were then tagged by 3 independent raters into the four emotional categories mentioned above. Afterwards \textit{Fleiss' Kappa} was calculated over the results, to use only songs for the creation of the training data where all raters agreed on the same emotion. The following table schows the distribution of kappa values over all songs.\\
 
 \begin{table}
-\centering
-\label{kappa-distribution}
-\begin{tabular}{@{}lll@{}}
-Kappa & Count & Percent \\ \midrule
-1.00 & 260 & 61.32\% \\
-0.33 & 155 & 36.56\% \\
-0.00 & 9 	 & 2.12\%
-\end{tabular}
-\caption{Distribution of Kappa values across tagged values}
+  \centering
+  \label{kappa-distribution}
+  \begin{tabular}{@{}lll@{}}
+    Kappa & Count & Percent \\ \midrule
+    1.00 & 260 & 61.32\% \\
+    0.33 & 155 & 36.56\% \\
+    0.00 & 9 	 & 2.12\%
+  \end{tabular}
+  \caption{Distribution of Kappa values across tagged values}
 \end{table}
 
 Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} and \textit{sad-lonely}, predicting difficulties in the differentiation of these categories.\\
@@ -156,15 +149,15 @@ Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} an
 To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible. We then used a two-step cluster analysis to analyse which features were actually usable for classification. We found out that the MFCC, along with several low level features, such as RMS, were showing promising results and decided to use these features for the classification. Previous research on wich features to use for audio classification has shown similar results \cite{Mckinney2003, Mandel2005, Tzanetakis2001}. Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as little features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
-\centering
-\begin{tabular}{@{}ll@{}}
-Feature Count & Feature Name \\ \midrule
-13 & MFCC \\
-12 & Chroma \\
-1  & RMS
-\end{tabular}
-\caption{Feature vector}
-\label{feature-vector}
+  \centering
+  \begin{tabular}{@{}ll@{}}
+    Feature Count & Feature Name \\ \midrule
+    13 & MFCC \\
+    12 & Chroma \\
+    1  & RMS
+  \end{tabular}
+  \caption{Feature vector}
+  \label{feature-vector}
 \end{table}
 
 \section{System}
@@ -185,17 +178,17 @@ The classifier was trained using the training data explained in \ref{training-da
 
 \begin{table}
   \centering
-\begin{tabular}{@{}lll@{}}
-\multicolumn{3}{c}{\textbf{Naive Bayes Classification Results}} \\ \midrule
-Correctly Classified             & 138      & 53.07\% \\
-Incorrectly Classified           & 122      & 46.92\% \\
-Kappa statistic 				 & 0.35     & \\
-Mean absolute error  			 & 0.23     & \\
-Root mean squared error 		 & 0.45     & \\
-Relative absolute error 		 & 64.52\%  & \\
-Root relative squared error 	 & 105.10\% & \\
-Total Number of Instances 		 & 260      & 100\%
-\end{tabular}
+  \begin{tabular}{@{}lll@{}}
+    Correctly Classified          & 138       & 53.07\% \\
+    Incorrectly Classified        & 122       & 46.93\% \\
+    Kappa statistic 				      & 0.35      & \\
+    Mean absolute error  			    & 0.23      & \\
+    Root mean squared error 	    & 0.45      & \\
+    Relative absolute error 	    & 64.52\%   & \\
+    Root relative squared error   & 105.10\%  & \\
+    Total Number of Instances     & 260       & 100\%
+  \end{tabular}
+  \caption{Evaluation of the Naive Bayes classifier}
 \end{table}
 
 In the process of the project, we have come to a few conclusions regarding methods and tools. We used the jAudio library to get an overview of available features, but struggled with the documentation of the code during the implementation. While jAudio has an easy to use graphical user interface for feature extraction, which can create great amounts of usable data in little time, the possibility to embed the application into a system is lacking.
