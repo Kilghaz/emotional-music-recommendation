@@ -97,6 +97,14 @@ The System will be developed as desktop application. We hope to develop a system
 Musical Recommender systems are well known and widespread. Using methods such as tags or similar user behaviour, pieces of music can be recommended by a variety of features.\\
 To try a new approach to this we decided to implement a recommendation system that classifies the main emotion of a certain piece of music by analyzing a set of features automatically extracted from the song. The extracted emotion is then used to recommend a song to the user, based on emotional similarity between songs or recommend the user a song by a certain emotion of choice.
 
+\begin{marginfigure}[0pc]
+  \begin{minipage}{\marginparwidth}
+    \centering
+    \includegraphics[width=1.0\marginparwidth]{images/tellegen-watson-clark-model.png}
+    \caption{Tellegen-Watson-Clark model of mood \cite{Tellegen1999}}~\label{fig:tellegen-watson-clark}
+  \end{minipage}
+\end{marginfigure}
+
 \section{Related Work}
 There have been various approaches on how to classify a piece of music by its emotion. There are different emotion models used as well as different feature extraction techniques.
 
@@ -105,12 +113,6 @@ In multiple models emotion is mapped as a matrix where the axes relate to a cert
 The Tellegen-Watson-Clark model, as used by \cite{Trohidis2011} has two axes labeled Positive Affect and Negative Affect which are used to show correlations between them and map emotions accordingly. Another dimension that can be derived from this model is the level of pleasantness of a certain emotion.\\
 
 Other projects use the Valence Arousal model, a similar approach. The axes are labeled \textit{Valence} and \textit{Arousal}, with \textit{Valence} describing the happiness of the emotion and \textit{Arousal} describing the state of agitation entered by the emotion. The mapping of the adjectives to the matrix look similar to the Tellegen-Watson-Clark model, although the axes have different meanings.
-
-\begin{figure}
-	\label{tellegen-nwatson-clark}
-	\includegraphics[width=\linewidth]{images/tellegen-watson-clark-model.jpg}
-	\caption{Tellegen-Watson-Clark model of mood \cite{Tellegen1999}}
-\end{figure}
 
 \subsection{Feature Extraction and Classification}
 Different researchers have tried different approaches to classification of music, not necessarily for classification of emotion. \cite{Mckinney2003} have proposed a method to automatically determine the genre of a certain piece of audio, including noise and speech. They tested different methods of classification against each other, resulting in good values for MFCC Analysis as well as Psychoacoustic features and a set of features called auditory filter temporal envelope, a set of bandpass filters which mimics the range of hearing of a human ear.\\
@@ -127,6 +129,14 @@ To be able to distinguish between emotions more easily, we decided to use a simp
 	\item angry-fearful
 	\item sad-lonely
 \end{itemize}
+
+\begin{marginfigure}[0pc]
+  \begin{minipage}{\marginparwidth}
+    \centering
+    \includegraphics[width=1.0\marginparwidth]{images/screenshot.png}
+  	\caption{User interface of the music player}~\label{fig:screenshot}
+  \end{minipage}
+\end{marginfigure}
 
 \section{Training Data}\label{training-data}
 To create a the training data for the classifier, we accumulated a collection of 424 songs of various genre and artist, roughly sorted by their main emotion, by searching various online streaming and video platforms, such as Youtube and Spotify for playlists with tags fitting our emotional model.\\
@@ -162,15 +172,7 @@ To try to get an overview about useful features we processed a small sample of a
 
 \section{System}
 During the development of the feature extraction process several approaches were tested for performance and format compatibility. Since the audio processing library \textit{MARSYAS} \cite{Tzanetakis1999} is written in C++ it was not considered for the player. \textit{TarsosDSP} \cite{Six2014} is another audio processing library with focus on real time audio processing. It is written in Java but does not support the mp3 format. The last library considered was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction. This application is also written in Java and supports both wav and mp3 formats and was therefore chosen over the other two.\\
-
-The system was realized as a simple Music Player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.
-
-\begin{figure}
-	\label{screenshot}
-	\includegraphics[width=\linewidth]{images/screenshot.png}
-	\caption{User interface of the music player}
-\end{figure}
-
+The system was implemented as a simple Music Player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.\\
 The classification is done by a Naive Bayes classifier, because it showed the best performance in comparison to the other classifiers tested (Support Vector Machine, Logistic Regression, Decision Trees).
 
 \section{Results}
