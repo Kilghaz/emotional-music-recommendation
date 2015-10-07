@@ -156,7 +156,8 @@ Those songs were then tagged by 3 independent raters into the four emotional cat
 
 Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} and \textit{sad-lonely}, predicting difficulties in the differentiation of these categories.\\
 
-To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible. We then used a two-step cluster analysis to analyse which features were actually usable for classification. We found out that the MFCC, along with several low level features, such as RMS, were showing promising results and decided to use these features for the classification. Previous research on wich features to use for audio classification has shown similar results \cite{Mckinney2003, Mandel2005, Tzanetakis2001}. Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as little features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
+To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible. 
+Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, where showing promising results and we decided to use these features for our classification.\cite{Mckinney2003, Mandel2005, Tzanetakis2001}.  Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
   \centering
@@ -171,12 +172,12 @@ To try to get an overview about useful features we processed a small sample of a
 \end{table}
 
 \section{System}
-During the development of the feature extraction process several approaches were tested for performance and format compatibility. Since the audio processing library \textit{MARSYAS} \cite{Tzanetakis1999} is written in C++ it was not considered for the player. \textit{TarsosDSP} \cite{Six2014} is another audio processing library with focus on real time audio processing. It is written in Java but does not support the mp3 format. The last library considered was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction. This application is also written in Java and supports both wav and mp3 formats and was therefore chosen over the other two.\\
+The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction. This application is written in Java and supports both wav and mp3 formats.\\
 The system was implemented as a simple Music Player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.\\
 The classification is done by a Naive Bayes classifier, because it showed the best performance in comparison to the other classifiers tested (Support Vector Machine, Logistic Regression, Decision Trees).
 
 \section{Results}
-The classifier was trained using the training data explained in \ref{training-data} and evaluated using 10-fold cross validation. The classifier seems to perform poorly given that only 54.07\% of all songs could be correctly classified, but having in mind that human raters assigned to only 61.32\% of all songs the same label, the classifier performs very well. The results also show, that the emotion of a song is a highly subjective experience and may need additional input data, like analysis of lyrics or additional audio features to become more precisely determinable.
+The classifier was trained using the training data explained in the "Training Data" section and evaluated using 10-fold cross validation. The classifier seems to perform poorly given that only 54.07\% of all songs could be correctly classified, but having in mind that human raters assigned to only 61.32\% of all songs the same label, the classifier performs very well. The results also show, that the emotion of a song is a highly subjective experience and may need additional input data, like analysis of lyrics or additional audio features to become more precisely determinable.
 
 \begin{table}
   \centering
