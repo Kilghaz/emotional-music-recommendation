@@ -106,8 +106,7 @@ Music and emotion are strongly related to each other \cite{Krumhansl2002} but em
 \end{marginfigure}
 
 \section{Related Work}
-The key problem in our approach to was to classify music by its emotion. There have been various approaches in classifying music and audio in general such as \cite{Mckinney2003,Cook2007,Jeremic2015,Tzanetakis2002}, with an accuracy up to 74\%. Though the results of these approaches are very promising, classifying music by emotion yield worse results \cite{Kim2010}. There have been various approaches on how to classify a piece of music by its emotion. There are different emotion models used as well as different feature extraction techniques.\\
-Most approaches use versions of either the \textit{Tellegen-Watson-Clark-Model} \cite{Trohidis2011} or the \textit{Valence-Arousal-Model} \cite{Kim2011}.\\
+The key problem in our recommendation system was to classify music by its emotion. There have been various approaches in classifying music and audio in general such as \cite{Mckinney2003,Cook2007,Jeremic2015,Tzanetakis2002}, with an accuracy up to 74\%. Though the results of these approaches are very promising, classifying music by emotion yield worse results \cite{Kim2010}. There have also been various approaches on how to classify a piece of music by its emotion. They utilize different emotion models, as well as different feature extraction techniques. Most of them use versions of either the \textit{Tellegen-Watson-Clark-Model} \cite{Trohidis2011} or the \textit{Valence-Arousal-Model} \cite{Kim2011}. \cite{Kim2010} shows, that a set of timbral features such as MFCC and RMS provide a solid set of features for emotion classification.
 
 \section{Emotion Model}
 The Tellegen-Watson-Clark model, as used by \cite{Trohidis2011} has two axes labeled Positive Affect and Negative Affect which map emotions accordingly. Another dimension that can be derived from this model is the level of pleasantness of a certain emotion.\\
@@ -119,13 +118,6 @@ To be able to distinguish between emotions more easily, we decided to use a simp
 	\item angry-fearful
 	\item sad-lonely
 \end{itemize}
-
-\subsection{Feature Extraction and Classification}
-Different researchers have tried different approaches to classification of music, not necessarily for classification of emotion. \cite{Mckinney2003} have proposed a method to automatically determine the genre of a certain piece of audio, including noise and speech. They tested different methods of classification against each other, resulting in good values for MFCC Analysis as well as Psychoacoustic features and a set of features called auditory filter temporal envelope, a set of bandpass filters which mimics the range of hearing of a human ear.\\
-
-\cite{Li2003} give a comparison of classification techniques for automatic assignment of genres, including MFCC, FFT, Beat and Pitch, showing best results for FFT and MFCC, or a combination of these with other features. They make use of a Support Vector Machine for classifying, with good results.
-\cite{Tzanetakis2001} also focus on the automatic classification of genres, focusing on the calculation of certain features such as STFT (short time fourier transform) and MFCC. The paper shows how to calculate the different features and explains the results. They find the best results when working with MFCC and STFT and identify genres that are harder to distinguish than others.
-
 
 \begin{marginfigure}[0pc]
   \begin{minipage}{\marginparwidth}
