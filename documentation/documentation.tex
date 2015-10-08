@@ -145,6 +145,7 @@ Those songs were then tagged by three independent raters into the four emotional
 
 Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} and \textit{sad-lonely}, predicting difficulties in the differentiation of these categories.\\
 
+\section{Feature extraction and classification}}
 Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, show promising results \cite{Trohidis2011,Kim2010}. We decided to use these features, along with the \textit{Chroma}-feature for our classification. Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the accuracy of the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
@@ -159,10 +160,10 @@ Previous research on which features to use for audio classification has shown th
   \label{feature-vector}
 \end{table}
 
-\section{System}
-The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction which supports both wav and mp3 formats.\\
-The system was implemented as a simple music player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.\\
-The classification is done by a Naive Bayes classifier, because it showed the best performance in comparison to the other classifiers tested (Support Vector Machine, Logistic Regression, Decision Trees).
+The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction which supports both wav and mp3 formats. The classification is done by a Naive Bayes classifier, because it showed the best performance in comparison to the other classifiers tested (Support Vector Machine, Logistic Regression, Decision Trees).
+
+\section{Recommendation System}
+The system was implemented as a simple music player. A song is classified as soon as it is loaded into the music library of the player, using the technique mentioned above. The system provides recommendations based on the users selection of emotion. Therefore the user interface provides a set of buttons associated with the emotion categories (angry, sad, calm, happy), which allow the user to select the desired music emotion. The system displays the resulting recommendations as a playlist.
 
 \section{Results}
 The classifier was trained using the data explained in the "Training Data" section and evaluated using 10-fold cross validation. The classifier seems to perform poorly given that only 54.07\% of all songs could be correctly classified, but having in mind that human raters assigned to only 61.32\% of all songs the same label, the classifier performs very well. The results also show, that the emotion of a song is a highly subjective experience and may need additional input data, like analysis of lyrics or additional audio features to become more precisely determinable.
