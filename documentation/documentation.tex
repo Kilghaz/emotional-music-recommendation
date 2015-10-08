@@ -98,7 +98,7 @@ Music recommendation systems are well known and widespread. Using methods such a
 Music and emotion are strongly related to each other \cite{Krumhansl2002} but emotion is rarely considered in existing recommendation systems. In our approach we implemented a system that recommends music by emotion. The emotion of the song is determined using a classifier that is trained on audio-features extracted from the song. The extracted emotion is then used to recommend a song to the user.
 
 \section{Related Work}
-The key problem in our recommendation system was to classify music by its emotion. There have been various approaches in classifying music and audio in general such as \cite{Mckinney2003,Cook2007,Jeremic2015,Tzanetakis2002}, with an accuracy up to 74\%. Though the results of these approaches are very promising, classifying music by emotion yield worse results \cite{Kim2010}. There have also been various approaches on how to classify a piece of music by its emotion. They utilize different emotion models, as well as different feature extraction techniques. Most of them use versions of either the \textit{Tellegen-Watson-Clark-Model} \cite{Trohidis2011} or the \textit{Valence-Arousal-Model} \cite{Kim2011}. \cite{Kim2010} shows, that a set of timbral features such as MFCC and RMS provide a solid set of features for emotion classification.
+The key problem in our recommendation system was to classify music by its emotion. There have been various approaches in classifying music and audio in general such as \cite{Mckinney2003,Cook2007,Jeremic2015,Tzanetakis2002}, with an accuracy up to 74\%. Though the results of these approaches are very promising, classifying music by emotion yields worse results \cite{Kim2010}. There have also been various approaches on how to classify a piece of music by its emotion. They utilize different emotion models, as well as different feature extraction techniques. Most of them use versions of either the \textit{Tellegen-Watson-Clark-Model} \cite{Trohidis2011} or the \textit{Valence-Arousal-Model} \cite{Kim2011}. \cite{Kim2010} shows, that a set of timbral features such as MFCC and RMS provide a solid set of features for emotion classification.
 
 \begin{marginfigure}[0pc]
   \begin{minipage}{\marginparwidth}
@@ -146,7 +146,7 @@ Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} an
 \end{marginfigure}
 
 \section{Feature extraction and classification}\label{sec:feature-extraction}
-Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, show promising results \cite{Trohidis2011,Kim2010}. We decided to use these features, along with the \textit{Chroma}-feature for our classification. Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the accuracy of the classification too much. The final feature vector consists of 26 features.
+Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, show promising results \cite{Trohidis2011,Kim2010}. We decided to use these features, along with the \textit{Chroma}-feature for our classification. Because the application is meant to be used in real time, the feature extraction needs to be as fast as possible. Therefore as few features as possible were used without impairing the accuracy of the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
   \centering
@@ -166,7 +166,7 @@ The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a g
 The system was implemented as a simple music player. A song is classified as soon as it is loaded into the music library of the player, using the technique mentioned above. The system provides recommendations based on the users selection of emotion. Therefore the user interface provides a set of buttons associated with the emotion categories (angry, sad, calm, happy), which allow the user to select the desired music emotion. The system displays the resulting recommendations as a playlist.
 
 \section{Results}
-The emotion of a song is a highly subjective experience, given that only 61.32\% of the songs were tagged with the same label. The classifier was trained using the data explained in the \textit{training data} section and was evaluated using 10-fold cross validation. The classification yields in an accuracy of 53.07\%. Similar approaches as reviewed by \cite{Kim2010} achieve accuracies ranging from 45\% to 65\%. An informal test of the recommendation system with five users showed, that they were not disappointed by the performance of the system.
+The emotion of a song is a highly subjective experience, given that only 61.32\% of the songs were tagged with the same label. The classifier was trained using the data explained in the \textit{training data} section and was evaluated using 10-fold cross validation. The classification yields an accuracy of 53.07\%. Similar approaches as reviewed by \cite{Kim2010} achieve accuracies ranging from 45\% to 65\%. An informal test of the recommendation system with five users showed, that they were not disappointed by the performance of the system.
 
 \begin{table}
   \centering
@@ -185,7 +185,7 @@ The emotion of a song is a highly subjective experience, given that only 61.32\%
 
 \section{Conclusion}
 We found that it is possible to classify music via emotion and built a recommendation system around that classification. A recommendation system such as this could be improved by recommending music based on the correlation between user emotion or user behaviour and music emotion.\\
-With the refinement of the extracted features, we are positive that the accuracy of the classification can be improved. Additional features would take even longer to extract from a song. As mentioned in section \ref{sec:feature-extraction} the used features were specifically chosen to make sure, the feature extraction process was as fast as possible, to provide the best possible user experience when using the recommendation system.
+With the refinement of the extracted features, we are positive that the accuracy of the classification can be improved. Additional features would take even longer to extract from a song. As mentioned in section \ref{sec:feature-extraction} the used features were specifically chosen to make sure that the feature extraction process was as fast as possible, to provide the best possible user experience when using the recommendation system.
 
 \bibliographystyle{SIGCHI-Reference-Format}
 \bibliography{literature}
