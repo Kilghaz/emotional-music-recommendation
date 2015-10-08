@@ -95,7 +95,7 @@ The System is intended as desktop application that can reliably determine simila
 
 \section{Introduction}
 Music recommendation systems are well known and widespread. Using methods such as tags or similar user behaviour, pieces of music can be recommended by a variety of features.\\
-Music and emotion are strongly related to each other \cite{Krumhansl2002} but emotion is never considered in existing recommendation systems. In our approach we implemented a system that recommends music by emotion. The emotion of the song is determined using a classifier that is trained on audio-features extracted from the song. The extracted emotion is then used to recommend a song to the user.
+Music and emotion are strongly related to each other \cite{Krumhansl2002} but emotion is rarely considered in existing recommendation systems. In our approach we implemented a system that recommends music by emotion. The emotion of the song is determined using a classifier that is trained on audio-features extracted from the song. The extracted emotion is then used to recommend a song to the user.
 
 \begin{marginfigure}[0pc]
   \begin{minipage}{\marginparwidth}
@@ -106,21 +106,11 @@ Music and emotion are strongly related to each other \cite{Krumhansl2002} but em
 \end{marginfigure}
 
 \section{Related Work}
-There have been various approaches on how to classify a piece of music by its emotion. There are different emotion models used as well as different feature extraction techniques.
-
-\subsection{Emotion Models}
-In multiple models emotion is mapped as a matrix where the axes relate to a certain emotional aspect and adjectives are placed in a circle inside the matrix to provide a guide. The number of axes varies from model to model and even in certain implementations of a model itself.\\
-The Tellegen-Watson-Clark model, as used by \cite{Trohidis2011} has two axes labeled Positive Affect and Negative Affect which are used to show correlations between them and map emotions accordingly. Another dimension that can be derived from this model is the level of pleasantness of a certain emotion.\\
-
-Other projects use the Valence Arousal model, a similar approach. The axes are labeled \textit{Valence} and \textit{Arousal}, with \textit{Valence} describing the happiness of the emotion and \textit{Arousal} describing the state of agitation entered by the emotion. The mapping of the adjectives to the matrix look similar to the Tellegen-Watson-Clark model, although the axes have different meanings.
-
-\subsection{Feature Extraction and Classification}
-Different researchers have tried different approaches to classification of music, not necessarily for classification of emotion. \cite{Mckinney2003} have proposed a method to automatically determine the genre of a certain piece of audio, including noise and speech. They tested different methods of classification against each other, resulting in good values for MFCC Analysis as well as Psychoacoustic features and a set of features called auditory filter temporal envelope, a set of bandpass filters which mimics the range of hearing of a human ear.\\
-
-\cite{Li2003} give a comparison of classification techniques for automatic assignment of genres, including MFCC, FFT, Beat and Pitch, showing best results for FFT and MFCC, or a combination of these with other features. They make use of a Support Vector Machine for classifying, with good results.
-\cite{Tzanetakis2001} also focus on the automatic classification of genres, focusing on the calculation of certain features such as STFT (short time fourier transform) and MFCC. The paper shows how to calculate the different features and explains the results. They find the best results when working with MFCC and STFT and identify genres that are harder to distinguish than others.
+The key problem in our approach to was to classify music by its emotion. There have been various approaches in classifying music and audio in general such as \cite{Mckinney2003,Cook2007,Jeremic2015,Tzanetakis2002}, with an accuracy up to 74\%. Though the results of these approaches are very promising, classifying music by emotion yield worse results \cite{Kim2010}. There have been various approaches on how to classify a piece of music by its emotion. There are different emotion models used as well as different feature extraction techniques.\\
+Most approaches use versions of either the \textit{Tellegen-Watson-Clark-Model} \cite{Trohidis2011} or the \textit{Valence-Arousal-Model} \cite{Kim2011}.\\
 
 \section{Emotion Model}
+The Tellegen-Watson-Clark model, as used by \cite{Trohidis2011} has two axes labeled Positive Affect and Negative Affect which map emotions accordingly. Another dimension that can be derived from this model is the level of pleasantness of a certain emotion.\\
 To be able to distinguish between emotions more easily, we decided to use a simplified version of the Tellegen-Watson-Clark model. We defined four emotional categories, marking the extreme ends of the graphs used in the model. The categories proposed in the Tellegen-Watson-Clark model have some adjectives that are very similar and difficult to distinguish especially when dealing with music as a carrier of emotion. Categories such as \textit{calm-relaxing} and \textit{quiet-still}, or \textit{amazed-surprised} and \textit{happy-pleased} were combined into one category. The remaining categories are:
 
 \begin{itemize}
@@ -129,6 +119,13 @@ To be able to distinguish between emotions more easily, we decided to use a simp
 	\item angry-fearful
 	\item sad-lonely
 \end{itemize}
+
+\subsection{Feature Extraction and Classification}
+Different researchers have tried different approaches to classification of music, not necessarily for classification of emotion. \cite{Mckinney2003} have proposed a method to automatically determine the genre of a certain piece of audio, including noise and speech. They tested different methods of classification against each other, resulting in good values for MFCC Analysis as well as Psychoacoustic features and a set of features called auditory filter temporal envelope, a set of bandpass filters which mimics the range of hearing of a human ear.\\
+
+\cite{Li2003} give a comparison of classification techniques for automatic assignment of genres, including MFCC, FFT, Beat and Pitch, showing best results for FFT and MFCC, or a combination of these with other features. They make use of a Support Vector Machine for classifying, with good results.
+\cite{Tzanetakis2001} also focus on the automatic classification of genres, focusing on the calculation of certain features such as STFT (short time fourier transform) and MFCC. The paper shows how to calculate the different features and explains the results. They find the best results when working with MFCC and STFT and identify genres that are harder to distinguish than others.
+
 
 \begin{marginfigure}[0pc]
   \begin{minipage}{\marginparwidth}
