@@ -169,7 +169,7 @@ Previous research on which features to use for audio classification has shown th
 \end{table}
 
 \section{System}
-The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction. This application is written in Java and supports both wav and mp3 formats.\\
+The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction which supports both wav and mp3 formats.\\
 The system was implemented as a simple music player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.\\
 The classification is done by a Naive Bayes classifier, because it showed the best performance in comparison to the other classifiers tested (Support Vector Machine, Logistic Regression, Decision Trees).
 
@@ -192,7 +192,7 @@ The classifier was trained using the data explained in the "Training Data" secti
 \end{table}
 
 \section{Conclusion}
-We found that it is possible to classify music via emotion and built a recommending system around that classification. With further refinement of the extracted features and possibly the addition of non-musical features such as lyrics, we are positive that the accuracy of the classification can be improved. A recommendation system such as this could, for example, be trained on the large library of a streaming platform and built into the player, as a new and unique way to find music.
+We found that it is possible to classify music via emotion and built a recommendation system around that classification. With further refinement of the extracted features and possibly the addition of non-musical features such as lyrics, we are positive that the accuracy of the classification can be improved. A recommendation system such as this could, for example, be trained on the large library of a streaming platform and built into the player, as a new and unique way to find music.
 
 \bibliographystyle{SIGCHI-Reference-Format}
 \bibliography{literature}
