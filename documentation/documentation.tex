@@ -95,7 +95,7 @@ The System will be developed as desktop application. We hope to develop a system
 
 \section{Introduction}
 Musical Recommender systems are well known and widespread. Using methods such as tags or similar user behaviour, pieces of music can be recommended by a variety of features.\\
-To try a new approach to this we decided to implement a recommendation system that classifies the main emotion of a certain piece of music by analyzing a set of features automatically extracted from the song. The extracted emotion is then used to recommend a song to the user, based on emotional similarity between songs or recommend the user a song by a certain emotion of choice.
+Music and emotion are strongly related to each other \cite{Krumhansl2002} but emotion is never considered in existing recommender systems. To try a new approach to recommending music, we decided to implement a system that recommends music by emotion. The emotion of the song is determined using a classifier that is trained on audio-features extracted from the song. The extracted emotion is then used to recommend a song to the user.
 
 \begin{marginfigure}[0pc]
   \begin{minipage}{\marginparwidth}
@@ -156,7 +156,7 @@ Those songs were then tagged by 3 independent raters into the four emotional cat
 
 Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} and \textit{sad-lonely}, predicting difficulties in the differentiation of these categories.\\
 
-To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible. 
+To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible.
 Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, where showing promising results and we decided to use these features for our classification.\cite{Mckinney2003, Mandel2005, Tzanetakis2001}.  Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
@@ -184,10 +184,10 @@ The classifier was trained using the training data explained in the "Training Da
   \begin{tabular}{@{}lll@{}}
     Correctly Classified          & 138       & 53.07\% \\
     Incorrectly Classified        & 122       & 46.93\% \\
-    Kappa statistic 				      & 0.35      & \\
-    Mean absolute error  			    & 0.23      & \\
-    Root mean squared error 	    & 0.45      & \\
-    Relative absolute error 	    & 64.52\%   & \\
+    Kappa statistic               & 0.35      & \\
+    Mean absolute error           & 0.23      & \\
+    Root mean squared error       & 0.45      & \\
+    Relative absolute error       & 64.52\%   & \\
     Root relative squared error   & 105.10\%  & \\
     Total Number of Instances     & 260       & 100\%
   \end{tabular}
