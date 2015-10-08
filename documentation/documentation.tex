@@ -108,7 +108,7 @@ Music and emotion are strongly related to each other \cite{Krumhansl2002} but em
 \section{Related Work}
 The key problem in our recommendation system was to classify music by its emotion. There have been various approaches in classifying music and audio in general such as \cite{Mckinney2003,Cook2007,Jeremic2015,Tzanetakis2002}, with an accuracy up to 74\%. Though the results of these approaches are very promising, classifying music by emotion yield worse results \cite{Kim2010}. There have also been various approaches on how to classify a piece of music by its emotion. They utilize different emotion models, as well as different feature extraction techniques. Most of them use versions of either the \textit{Tellegen-Watson-Clark-Model} \cite{Trohidis2011} or the \textit{Valence-Arousal-Model} \cite{Kim2011}. \cite{Kim2010} shows, that a set of timbral features such as MFCC and RMS provide a solid set of features for emotion classification.
 
-\section{Emotion Model}
+\section{Emotion Model}\label{sec:emotion-model}
 The Tellegen-Watson-Clark model, as used by \cite{Trohidis2011} has two axes labeled Positive Affect and Negative Affect which map emotions accordingly. Another dimension that can be derived from this model is the level of pleasantness of a certain emotion.\\
 To be able to distinguish between emotions more easily, we decided to use a simplified version of the Tellegen-Watson-Clark model. We defined four emotional categories, marking the extreme ends of the graphs used in the model. The categories proposed in the Tellegen-Watson-Clark model have some adjectives that are very similar and difficult to distinguish especially when dealing with music as a carrier of emotion. Categories such as \textit{calm-relaxing} and \textit{quiet-still}, or \textit{amazed-surprised} and \textit{happy-pleased} were combined into one category. The remaining categories are:
 
@@ -128,8 +128,8 @@ To be able to distinguish between emotions more easily, we decided to use a simp
 \end{marginfigure}
 
 \section{Training Data}\label{training-data}
-To create a the training data for the classifier, we accumulated a collection of 424 songs of various genre and artist, roughly sorted by their main emotion, by searching various online streaming and video platforms, such as Youtube and Spotify for playlists with tags fitting our emotional model.\\
-Those songs were then tagged by 3 independent raters into the four emotional categories mentioned above. Afterwards \textit{Fleiss' Kappa} was calculated over the results, to use only songs for the creation of the training data where all raters agreed on the same emotion. The following table shows the distribution of kappa values over all songs.\\
+To create the training data for the classifier, we accumulated a collection of 424 songs of various genre and artist. To achieve a preferably even distribution over the four emotion categories described in section \ref{sec:emotion-model}, we searched various online streaming and video platforms, such as YouTube and Spotify, for playlists with tags fitting our categories, such as \textit{angry, sad, relaxing} or \textit{happy}.\\
+Those songs were then tagged by three independent raters into the four emotional categories mentioned above. Afterwards \textit{Fleiss' Kappa} was calculated over the results, to use only songs for the creation of the training data where all raters agreed on the same emotion. The following table shows the distribution of kappa values over all songs.\\
 
 \begin{table}
   \centering
@@ -145,8 +145,7 @@ Those songs were then tagged by 3 independent raters into the four emotional cat
 
 Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} and \textit{sad-lonely}, predicting difficulties in the differentiation of these categories.\\
 
-To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible.
-Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, where showing promising results, so we decided to use these features for our classification.\cite{Mckinney2003, Mandel2005, Tzanetakis2001}.  Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
+Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, show promising results \cite{Trohidis2011,Kim2010}. We decided to use these features, along with the \textit{Chroma}-feature for our classification. Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the accuracy of the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
   \centering
