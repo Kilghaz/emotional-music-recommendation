@@ -85,7 +85,7 @@ DOI string from ACM form confirmation}
 \begin{abstract}
 Music recommendation systems are well explored and commonly used but are normally based on
 manually tagged parameters and simple similarity calculation. Our project proposes a recommendation system based on emotional computing, automatic classification and feature extraction, which recommends music based on the emotion expressed by the song.\\
-To achieve this goal a set of features is extracted from the song, including the MFCC (mel-frequency cepstral coefficients) following the works of McKinney et al. \cite{Mckinney2003} and a machine learning system is trained on a set of 424 Songs, which are categorized by emotion. The categorization of the song is performed manually by multiple persons to avoid error. The emotional categorization is performed using a modified version of the Tellegen-Watson-Clark emotion model \cite{Tellegen1999}, as proposed by Trohidis et al. \cite{Trohidis2011}.
+To achieve this goal a set of features is extracted from the song, including the MFCC (mel-frequency cepstral coefficients) following the works of McKinney et al. \cite{Mckinney2003} and a machine learning system is trained on a set of 424 songs, which are categorized by emotion. The categorization of the song is performed manually by multiple persons to avoid error. The emotional categorization is performed using a modified version of the Tellegen-Watson-Clark emotion model \cite{Tellegen1999}, as proposed by Trohidis et al. \cite{Trohidis2011}.
 The System is intended as desktop application that can reliably determine similarities between the main emotion in multiple pieces of music, allowing the user to choose music by emotion. We report our findings below.
 \end{abstract}
 
@@ -94,8 +94,8 @@ The System is intended as desktop application that can reliably determine simila
 \category{H.3.2}{Record classification}{Miscellaneous}
 
 \section{Introduction}
-Music recommendation systems are well known and widespread. Using methods such as tags or similar user behaviour, pieces of music can be recommended by a variety of features.\\
-Music and emotion are strongly related to each other \cite{Krumhansl2002} but emotion is never considered in existing recommendation systems. In our approach we implemented a system that recommends music by emotion. The emotion of the song is determined using a classifier that is trained on audio-features extracted from the song. The extracted emotion is then used to recommend a song to the user.
+Musical Recommender systems are well known and widespread. Using methods such as tags or similar user behaviour, pieces of music can be recommended by a variety of features.\\
+To try a new approach to this we decided to implement a recommendation system that classifies the main emotion of a certain piece of music by analyzing a set of features automatically extracted from the song. The extracted emotion is then used to recommend a song to the user, based on emotional similarity between songs or recommend the user a song by a certain emotion of choice.
 
 \begin{marginfigure}[0pc]
   \begin{minipage}{\marginparwidth}
@@ -140,7 +140,7 @@ To be able to distinguish between emotions more easily, we decided to use a simp
 
 \section{Training Data}\label{training-data}
 To create a the training data for the classifier, we accumulated a collection of 424 songs of various genre and artist, roughly sorted by their main emotion, by searching various online streaming and video platforms, such as Youtube and Spotify for playlists with tags fitting our emotional model.\\
-Those songs were then tagged by 3 independent raters into the four emotional categories mentioned above. Afterwards \textit{Fleiss' Kappa} was calculated over the results, to use only songs for the creation of the training data where all raters agreed on the same emotion. The following table schows the distribution of kappa values over all songs.\\
+Those songs were then tagged by 3 independent raters into the four emotional categories mentioned above. Afterwards \textit{Fleiss' Kappa} was calculated over the results, to use only songs for the creation of the training data where all raters agreed on the same emotion. The following table shows the distribution of kappa values over all songs.\\
 
 \begin{table}
   \centering
@@ -156,8 +156,8 @@ Those songs were then tagged by 3 independent raters into the four emotional cat
 
 Most of the disagreement (90 songs) were in categories \textit{calm-relaxing} and \textit{sad-lonely}, predicting difficulties in the differentiation of these categories.\\
 
-To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible.
-Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, where showing promising results and we decided to use these features for our classification.\cite{Mckinney2003, Mandel2005, Tzanetakis2001}.  Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
+To try to get an overview about useful features we processed a small sample of audio files with the jAudio feature extractor \cite{McEnnis2005}, extracting as many features as possible. 
+Previous research on which features to use for audio classification has shown that MFCC, along with several low level features, such as RMS, where showing promising results, so we decided to use these features for our classification.\cite{Mckinney2003, Mandel2005, Tzanetakis2001}.  Because the application is meant to be used in real time, the feature extraction needs to be as quickly as possible. Therefore as few features as possible were used without impairing the classification too much. The final feature vector consists of 26 features.
 
 \begin{table}
   \centering
@@ -173,31 +173,29 @@ Previous research on which features to use for audio classification has shown th
 
 \section{System}
 The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a gui application specifically developed for feature extraction. This application is written in Java and supports both wav and mp3 formats.\\
-The system was implemented as a simple Music Player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.\\
+The system was implemented as a simple music player. The user interface provides a set of buttons associated with the emotions, which allow the user to filter the available songs by their emotion. A song is classified as soon as it is loaded into the music library of the player.\\
 The classification is done by a Naive Bayes classifier, because it showed the best performance in comparison to the other classifiers tested (Support Vector Machine, Logistic Regression, Decision Trees).
 
 \section{Results}
-The classifier was trained using the training data explained in the "Training Data" section and evaluated using 10-fold cross validation. The classifier seems to perform poorly given that only 54.07\% of all songs could be correctly classified, but having in mind that human raters assigned to only 61.32\% of all songs the same label, the classifier performs very well. The results also show, that the emotion of a song is a highly subjective experience and may need additional input data, like analysis of lyrics or additional audio features to become more precisely determinable.
+The classifier was trained using the data explained in the "Training Data" section and evaluated using 10-fold cross validation. The classifier seems to perform poorly given that only 54.07\% of all songs could be correctly classified, but having in mind that human raters assigned to only 61.32\% of all songs the same label, the classifier performs very well. The results also show, that the emotion of a song is a highly subjective experience and may need additional input data, like analysis of lyrics or additional audio features to become more precisely determinable.
 
 \begin{table}
   \centering
   \begin{tabular}{@{}lll@{}}
     Correctly Classified          & 138       & 53.07\% \\
     Incorrectly Classified        & 122       & 46.93\% \\
-    Kappa statistic               & 0.35      & \\
-    Mean absolute error           & 0.23      & \\
-    Root mean squared error       & 0.45      & \\
-    Relative absolute error       & 64.52\%   & \\
+    Kappa statistic 				      & 0.35      & \\
+    Mean absolute error  			    & 0.23      & \\
+    Root mean squared error 	    & 0.45      & \\
+    Relative absolute error 	    & 64.52\%   & \\
     Root relative squared error   & 105.10\%  & \\
     Total Number of Instances     & 260       & 100\%
   \end{tabular}
   \caption{Evaluation of the Naive Bayes classifier}
 \end{table}
 
-In the process of the project, we have come to a few conclusions regarding methods and tools. We used the jAudio library to get an overview of available features, but struggled with the documentation of the code during the implementation. While jAudio has an easy to use graphical user interface for feature extraction, which can create great amounts of usable data in little time, the possibility to embed the application into a system is lacking.
-
 \section{Conclusion}
-We found that it is possible to classify music via emotion and build a recommending system around that classification. With further refinement of the extracted features and possibly the addition of non-musical features such as lyrics, we are positive that the accuracy of the classification can be further improved. A recommendation system such as this could, for example, be trained on the large library of a streaming platform and built into the player, as a new and unique way to find music.
+We found that it is possible to classify music via emotion and built a recommending system around that classification. With further refinement of the extracted features and possibly the addition of non-musical features such as lyrics, we are positive that the accuracy of the classification can be improved. A recommendation system such as this could, for example, be trained on the large library of a streaming platform and built into the player, as a new and unique way to find music.
 
 \bibliographystyle{SIGCHI-Reference-Format}
 \bibliography{literature}
