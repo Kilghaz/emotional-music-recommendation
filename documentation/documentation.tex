@@ -120,7 +120,7 @@ To be able to distinguish between emotions more easily, we decided to use a simp
 \end{itemize}
 
 \section{Training Data}\label{training-data}
-To create the training data for the classifier, we accumulated a collection of 424 songs of various genre and artist. To achieve a preferably even distribution over the four emotion categories described in section \ref{sec:emotion-model}, we searched various online streaming and video platforms, such as YouTube and Spotify, for playlists with tags fitting our categories, such as \textit{angry, sad, relaxing} or \textit{happy}.\\
+To create the training data for the classifier, we accumulated a collection of 424 songs of various genre and artist. To achieve a preferably even distribution over the four emotion categories described above, we searched various online streaming and video platforms, such as YouTube and Spotify, for playlists with tags fitting our categories, such as \textit{angry, sad, relaxing} or \textit{happy}.\\
 Those songs were then tagged by three independent raters into the four emotional categories mentioned above. Afterwards \textit{Fleiss' Kappa} was calculated over the results, to use only songs for the creation of the training data where all raters agreed on the same emotion. The following table shows the distribution of kappa values over all songs.\\
 
 \begin{table}
@@ -166,7 +166,7 @@ The audio processing library we used was \textit{jAudio} \cite{McEnnis2005}, a g
 The system was implemented as a simple music player. A song is classified as soon as it is loaded into the music library of the player, using the technique mentioned above. The system provides recommendations based on the users selection of emotion. Therefore the user interface provides a set of buttons associated with the emotion categories (angry, sad, calm, happy), which allow the user to select the desired music emotion. The system displays the resulting recommendations as a playlist.
 
 \section{Results}
-The emotion of a song is a highly subjective experience, given that only 61.32\% of the songs were tagged with the same label. The classifier was trained using the data explained in the \textit{training data} section and was evaluated using 10-fold cross validation. The classification yields an accuracy of 53.07\%. Similar approaches as reviewed by \cite{Kim2010} achieve accuracies ranging from 45\% to 65\%. An informal test of the recommendation system with five users showed, that they were not disappointed by the performance of the system.
+The emotion of a song is a highly subjective experience, given that only 61.32\% of the songs were tagged with the same label. The classifier was trained using the data explained in the \textit{training data} section and was evaluated using 10-fold cross validation. The classification yields an accuracy of 53.07\%. Similar approaches as reviewed by \cite{Kim2010} achieve accuracies ranging from 45\% to 65\%. Better results were only achieved when using more features or additional information such as the lyrics. An informal test of the recommendation system with five users showed, that they were not disappointed by the performance of the system.
 
 \begin{table}
   \centering
@@ -185,7 +185,7 @@ The emotion of a song is a highly subjective experience, given that only 61.32\%
 
 \section{Conclusion}
 We found that it is possible to classify music via emotion and built a recommendation system around that classification. A recommendation system such as this could be improved by recommending music based on the correlation between user emotion or user behaviour and music emotion.\\
-With the refinement of the extracted features, we are positive that the accuracy of the classification can be improved. Additional features would take even longer to extract from a song. As mentioned in section \ref{sec:feature-extraction} the used features were specifically chosen to make sure that the feature extraction process was as fast as possible, to provide the best possible user experience when using the recommendation system.
+With the refinement of the extracted features, we are positive that the accuracy of the classification can be improved. Additional features would take even longer to extract from a song. As mentioned above the used features were specifically chosen to make sure that the feature extraction process was as fast as possible, to provide the best possible user experience when using the recommendation system.
 
 \bibliographystyle{SIGCHI-Reference-Format}
 \bibliography{literature}
