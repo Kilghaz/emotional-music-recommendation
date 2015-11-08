@@ -2,13 +2,25 @@ package de.ur.assistenz.emomusic.player;
 
 import de.ur.assistenz.emomusic.player.Observer.Event;
 import de.ur.assistenz.emomusic.player.Observer.EventSender;
+import de.ur.assistenz.emomusic.speech.SpeechRecognizer;
+import de.ur.assistenz.emomusic.speech.processors.KeywordExtractionProcessor;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 public class PlayerWindow {
+
+    private static final String SPEECH_EVENT_NEXT = "next";
+    private static final String SPEECH_EVENT_PREVIOUS = "previous";
+    private static final String SPEECH_EVENT_PLAY = "play";
+    private static final String SPEECH_EVENT_PAUSE = "pause";
 
     private static final String TITLE = "E.M.O. Music Player";
     private static final String STYLESHEET = "style.css";
@@ -25,11 +37,13 @@ public class PlayerWindow {
     private PlaylistSelectionModel playlistSelectionModel = new PlaylistSelectionModel();
     private PlaylistModel playlistModel = new PlaylistModel();
     private MusicLibraryModel musicLibraryModel = MusicLibraryModel.getInstance();
+    private SpeechRecognizer speechRecognizer = new SpeechRecognizer();
 
     public PlayerWindow(Stage stage) {
         try {
             this.stage = stage;
             initGUI();
+            initSpeechRecognition();
             initController();
         }
         catch (Exception e) {
@@ -48,12 +62,28 @@ public class PlayerWindow {
         layout.setBottom(playerControlsView);
         layout.setRight(playlistSelectionView);
 
-
         Scene scene = new Scene(layout, 902, 800);
         scene.getStylesheets().addAll(STYLESHEET);
 
+        // changes the logging level to WARNING
+        Logger log = LogManager.getLogManager().getLogger("");
+        for (Handler h : log.getHandlers()) {
+            h.setLevel(Level.SEVERE);
+        }
+
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void initSpeechRecognition() {
+        KeywordExtractionProcessor processor = new KeywordExtractionProcessor();
+        processor.addKeyword(SPEECH_EVENT_NEXT, "next", "forward", "continue");
+        processor.addKeyword(SPEECH_EVENT_PREVIOUS, "previous", "back");
+        processor.addKeyword(SPEECH_EVENT_PLAY, "play", "start", "run");
+        processor.addKeyword(SPEECH_EVENT_PAUSE, "pause", "stop", "halt", "wait");
+
+        speechRecognizer.setEventProcessor(processor);
+        stage.setOnCloseRequest(windowEvent -> speechRecognizer.stopRecognition());
     }
 
     private void initController() {
@@ -118,6 +148,15 @@ public class PlayerWindow {
 
         playlistModel.setSongs(musicLibraryModel.fetchSongs());
         playlistSelectionView.setActiveButton(playlistSelectionModel.getPlaylist());
+
+        speechRecognizer.onSpeechProcessed(((sender, event) -> {
+            switch (event.getName()) {
+                case SPEECH_EVENT_PLAY: audioPlayer.play(); break;
+                case SPEECH_EVENT_NEXT: playlistModel.next(); break;
+                case SPEECH_EVENT_PREVIOUS: playlistModel.previous(); break;
+                case SPEECH_EVENT_PAUSE: audioPlayer.pause(); break;
+            }
+        }));
     }
 
     private void onMusicLibraryUpdated(EventSender eventSender, Event musicLibraryEvent) {

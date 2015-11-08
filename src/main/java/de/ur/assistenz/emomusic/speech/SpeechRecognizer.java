@@ -6,6 +6,7 @@ import de.ur.assistenz.emomusic.player.Observer.EventSender;
 import de.ur.assistenz.emomusic.speech.processors.KeywordExtractionProcessor;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +20,7 @@ public class SpeechRecognizer {
     private SpeechRecognitionThread recognitionThread = null;
     private SpeechEventProcessor eventProcessor = null;
 
-    public SpeechRecognizer(SpeechEventProcessor processor) {
+    private SpeechRecognizer(SpeechEventProcessor processor) {
         this.eventProcessor = processor;
         this.initEvents();
         this.initSpeechRecognition();
@@ -33,9 +34,25 @@ public class SpeechRecognizer {
     }
 
     private void initEvents() {
-        for(String eventKey : eventProcessor.getEventKeys()) {
-            eventSender.register(eventKey);
-        }
+        eventProcessor.getEventKeys().forEach(eventSender::register);
+    }
+
+    /**
+     * Sets the events processor, that is used to post-process speech input
+     *
+     * @param eventProcessor The event Processor
+     */
+    public void setEventProcessor(SpeechEventProcessor eventProcessor) {
+        this.eventProcessor.getEventKeys().forEach(eventSender::unregister);
+        this.eventProcessor = eventProcessor;
+        this.initEvents();
+    }
+
+    /**
+     * @return returns the speech event processor
+     */
+    public SpeechEventProcessor getEventProcessor() {
+        return eventProcessor;
     }
 
     private void initSpeechRecognition() {
@@ -50,7 +67,7 @@ public class SpeechRecognizer {
             e.printStackTrace();
         }
 
-        recognitionThread = new SpeechRecognitionThread(10000);
+        recognitionThread = new SpeechRecognitionThread();
         recognitionThread.start();
     }
 
@@ -74,7 +91,7 @@ public class SpeechRecognizer {
      * Register callback for speech recognition
      * @param receiver The Event receiver that implements the callback
      */
-    public void onSpeechProcessed(EventReceiver receiver, SpeechEventProcessor eventProcessor) {
+    public void onSpeechProcessed(EventReceiver receiver) {
         for(String key : eventProcessor.getEventKeys()) {
             eventSender.on(key, receiver);
         }
@@ -83,31 +100,20 @@ public class SpeechRecognizer {
     private void processSpeechEvent(SpeechEvent speechEvent) {
         List<Event> events = eventProcessor.process(speechEvent);
         for(Event event : events) {
-            eventSender.notify(event.getName(), event);
+            Platform.runLater(() -> eventSender.notify(event.getName(), event));
         }
     }
 
     private class SpeechRecognitionThread extends Thread implements Runnable {
 
         private boolean running;
-        private long timeBetweenCallbacks;
-
-        public SpeechRecognitionThread(long timeBetweenCallbacks) {
-            this.timeBetweenCallbacks = timeBetweenCallbacks;
-        }
 
         @Override
         public void run() {
             while (running) {
-                try {
-                    recognizer.startRecognition(true);
-                    // TODO: disable wait if sphinx already blocks
-                    wait(this.timeBetweenCallbacks);
-                    processSpeechEvent(new SpeechEvent(recognizer.getResult()));
-                    recognizer.stopRecognition();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                recognizer.startRecognition(true);
+                processSpeechEvent(new SpeechEvent(recognizer.getResult()));
+                recognizer.stopRecognition();
             }
         }
 
